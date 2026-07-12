@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>GroupTrip — Uber Coordinated Rides</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
-    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
-    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Kept local so this prototype also works when opened directly as a file. -->
+    <script src="vendor/react.development.js"></script>
+    <script src="vendor/react-dom.development.js"></script>
+    <script src="vendor/history.development.js"></script>
+    <script src="vendor/react-router.development.js"></script>
+    <script src="vendor/react-router-dom.development.js"></script>
+    <script src="vendor/babel.min.js"></script>
+    <script src="vendor/tailwind.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <script>
@@ -74,6 +75,31 @@ const RIDERS = [
 const DESTINATION = { name: 'Chase Center', address: '1 Warriors Way, San Francisco', eta: '8:42 PM' };
 const TRIP_COST = 42.50;
 const SAFETY_PIN = '4921';
+const INVITE_URL = 'uber://group-trip/GT-8821';
+
+const getVehiclePlan = (count) => {
+    if (count <= 4) return [{ type:'UberX', capacity:4, price:TRIP_COST, icon:'directions_car', why:'The quickest, lowest-cost option for your group.' }];
+    if (count <= 6) return [{ type:'UberXL', capacity:6, price:TRIP_COST, icon:'airport_shuttle', why:'One spacious vehicle keeps your group together.' }];
+    if (count <= 8) return [
+        { type:'UberX', capacity:4, price:18.20, icon:'directions_car', why:'Best balance of speed and cost for your party.' },
+        { type:'UberXL', capacity:6, price:24.30, icon:'airport_shuttle', why:'Best balance of speed and cost for your party.' }
+    ];
+    return [
+        { type:'UberXL', capacity:6, price:21.25, icon:'airport_shuttle', why:'Two coordinated XLs give everyone room.' },
+        { type:'UberXL', capacity:6, price:21.25, icon:'airport_shuttle', why:'Two coordinated XLs give everyone room.' }
+    ];
+};
+
+const shareInvite = async (addToast) => {
+    const shareData = { title:'Join my Uber Group Trip', text:`Join Alex's ride to ${DESTINATION.name}`, url:INVITE_URL };
+    try {
+        if (navigator.share) await navigator.share(shareData);
+        else if (navigator.clipboard) { await navigator.clipboard.writeText(INVITE_URL); addToast('Invite link copied — it expires in 60 minutes.', 'success'); }
+        else addToast(`Invite link: ${INVITE_URL}`, 'info');
+    } catch (error) {
+        if (error.name !== 'AbortError') addToast('Invite link is ready to share.', 'success');
+    }
+};
 
 function TripProvider({ children }) {
     const [riders, setRiders] = useState(RIDERS.slice(0, 1));
@@ -290,6 +316,7 @@ const HomePage = () => {
                                 <div className="w-[22px] h-[22px] rounded-full bg-uber-gray-600 border-2 border-uber-black flex items-center justify-center text-[8px] font-bold text-white">+4</div>
                             </div>
                         </div>
+                        <p className="text-[10px] text-white/45 mt-2">Used by 2,400+ groups this week</p>
                     </button>
 
                     <div className="mt-2">
@@ -356,6 +383,25 @@ const FormationPage = () => {
         });
     };
 
+    const addNextRider = () => {
+        const next = RIDERS_ALL.find(candidate => !riders.some(r => r.id === candidate.id));
+        if (!next) return addToast('Everyone invited has already joined.', 'info');
+        setRiders(prev => [...prev, next]);
+        setStatusLog(prev => [...prev, { text: `${next.name} joined`, type: 'join' }, { text:'Recalculating route...', type:'system' }]);
+        setProgress(p => Math.max(p, 65));
+        addToast(`${next.name} joined your Group Trip`, 'success');
+    };
+
+    const openInvite = () => showModal({
+        icon:'group_add', title:'Invite friends',
+        body:'Share a link that opens this trip in Uber. Links expire 60 minutes after creation or when you confirm the plan.',
+        actions:[
+            { label:'Share invite link', action:() => shareInvite(addToast) },
+            { label:'Simulate rider joining', variant:'secondary', action:addNextRider },
+            { label:'Close', variant:'ghost' }
+        ]
+    });
+
     return (
         <div className="min-h-screen bg-uber-gray-50">
             <TopBar title="Group Trip" statusLabel="LIVE"/>
@@ -397,17 +443,21 @@ const FormationPage = () => {
                             ))}
                             {riders.length < 12 && (
                                 <div className="flex flex-col items-center gap-1">
-                                    <div className="w-14 h-14 rounded-full border-2 border-dashed border-uber-gray-300 flex items-center justify-center"><Icon name="add" size={20} className="text-uber-gray-400"/></div>
+                                    <button onClick={openInvite} aria-label="Invite more friends" className="w-14 h-14 rounded-full border-2 border-dashed border-uber-gray-300 flex items-center justify-center"><Icon name="add" size={20} className="text-uber-gray-400"/></button>
                                     <span className="text-xs text-uber-gray-400">Invite</span>
                                 </div>
                             )}
                         </div>
                         <div className="border-t border-uber-gray-100 mt-4 pt-4 flex gap-2">
-                            <Btn icon="share" variant="primary" onClick={() => addToast('Invite link copied!', 'success')}>Share Invite Link</Btn>
+                            <Btn icon="share" variant="primary" onClick={openInvite}>Invite More Friends</Btn>
                         </div>
                     </Card>
-                    <Btn onClick={() => nav('/plan')} disabled={riders.length < 2 || progress < 100}>
-                        {progress < 100 ? 'Optimizing...' : 'View Recommended Plan'}
+                    {progress === 100 && <Card className="p-3 flex items-center gap-3 anim-slide">
+                        <div className="w-9 h-9 rounded-full bg-uber-success/10 text-uber-success flex items-center justify-center"><Icon name="check_circle" size={20} fill/></div>
+                        <div className="flex-1"><p className="text-sm font-bold">Ready to see your plan?</p><p className="text-[11px] text-uber-gray-500">Your latest pickups and fare estimate are ready.</p></div>
+                    </Card>}
+                    <Btn onClick={() => nav('/plan')} disabled={riders.length < 2}>
+                        {riders.length < 2 ? 'Invite at least 1 rider' : progress < 100 ? 'See plan while optimizing' : 'View Recommended Plan'}
                     </Btn>
                 </div>
             </main>
@@ -421,8 +471,9 @@ const FormationPage = () => {
    ═══════════════════════════════════════════ */
 const PlanPage = () => {
     const nav = useNavigate();
-    const { riders } = useContext(TripContext);
+    const { riders, showModal } = useContext(TripContext);
     const perPerson = (TRIP_COST / riders.length).toFixed(2);
+    const vehicles = getVehiclePlan(riders.length);
     return (
         <div className="min-h-screen bg-uber-gray-50">
             <TopBar title="Your Group Plan"/>
@@ -436,7 +487,7 @@ const PlanPage = () => {
 
                 {/* Stats Row */}
                 <div className="bg-white border-b border-uber-gray-100 px-4 py-3 grid grid-cols-4 gap-2">
-                    {[{l:'Total',v:`$${TRIP_COST}`},{l:'Riders',v:riders.length},{l:'Vehicles',v:'2'},{l:'ETA',v:DESTINATION.eta}].map((s,i) => (
+                    {[{l:'Total',v:`$${TRIP_COST}`},{l:'Riders',v:riders.length},{l:'Vehicles',v:vehicles.length},{l:'ETA',v:DESTINATION.eta}].map((s,i) => (
                         <div key={i} className={`text-center ${i>0?'border-l border-uber-gray-100':''}`}>
                             <p className="text-[10px] text-uber-gray-400 uppercase font-bold tracking-wider">{s.l}</p>
                             <p className="text-sm font-bold font-display">{s.v}</p>
@@ -452,17 +503,18 @@ const PlanPage = () => {
                                 <h2 className="font-display font-bold">Recommended Vehicles</h2>
                                 <span className="flex items-center gap-1 text-[11px] font-bold bg-uber-gray-50 px-2 py-0.5 rounded"><Icon name="auto_awesome" size={12} fill/> Smart Pick</span>
                             </div>
-                            {[{t:'UberX',p:3,c:'$18.20',ic:'directions_car'},{t:'UberXL',p:4,c:'$24.30',ic:'airport_shuttle'}].map((v,i) => (
+                            {vehicles.map((v,i) => (
                                 <div key={i} className="flex items-center gap-3 p-3 bg-uber-gray-50 rounded-lg">
-                                    <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-card"><Icon name={v.ic} size={20}/></div>
-                                    <div className="flex-1"><p className="text-sm font-bold">{v.t}</p><p className="text-xs text-uber-gray-500">{v.p} passengers</p></div>
-                                    <span className="text-sm font-bold">{v.c}</span>
+                                    <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-card"><Icon name={v.icon} size={20}/></div>
+                                    <div className="flex-1"><p className="text-sm font-bold">{v.type}</p><p className="text-xs text-uber-gray-500">Up to {v.capacity} passengers</p></div>
+                                    <span className="text-sm font-bold">${v.price.toFixed(2)}</span>
                                 </div>
                             ))}
                             <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg">
                                 <Icon name="info" size={16} className="text-blue-500 mt-0.5 shrink-0"/>
                                 <p className="text-xs text-blue-700">Split into two vehicles to accommodate {riders.length} riders. ~${perPerson}/person.</p>
                             </div>
+                            <button onClick={() => nav('/vehicles')} className="w-full text-sm font-bold underline text-left">View vehicle assignments</button>
                         </div>
                     </Card>
 
@@ -470,8 +522,8 @@ const PlanPage = () => {
                     <Card className="p-4">
                         <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-3">Pickup Sequence</h3>
                         <div className="space-y-0">
-                            {riders.filter(r=>r.vehicle===1).map((r, i, arr) => (
-                                <TimelineItem key={r.id} avatar={r.img} name={`${r.name} ${r.last}${r.me?' (You)':''}`} address={`Pickup: ${r.pickup}`} time={`8:${10+i*4} PM`} isLast={i===arr.length-1 && false}/>
+                            {riders.map((r, i) => (
+                                <TimelineItem key={r.id} avatar={r.img} name={`${r.name} ${r.last}${r.me?' (You)':''}`} address={`Pickup ${i+1}: ${r.pickup}`} time={`8:${10+i*4} PM`} isLast={false}/>
                             ))}
                             <TimelineItem name={DESTINATION.name} address={`Arrival: ${DESTINATION.address}`} time={DESTINATION.eta} status="upcoming" isLast/>
                         </div>
@@ -508,10 +560,29 @@ const PlanPage = () => {
                 </div>
             </main>
             <div className="fixed bottom-0 left-0 w-full z-40 bg-gradient-to-t from-uber-gray-50 via-uber-gray-50 to-transparent pt-6 px-4 pb-4">
-                <Btn onClick={() => nav('/matching')}>Confirm Group Plan</Btn>
+                <Btn onClick={() => showModal({ icon:'credit_card', title:'Confirm Group Plan?', body:`You’ll be charged $${TRIP_COST.toFixed(2)} now. The estimated equal split is $${perPerson} for each confirmed rider after the trip.`, actions:[{label:'Confirm & Book', action:()=>nav('/matching')},{label:'Cancel',variant:'secondary'}] })}>Confirm Group Plan</Btn>
             </div>
         </div>
     );
+};
+
+const VehicleRecommendationPage = () => {
+    const nav = useNavigate();
+    const { riders } = useContext(TripContext);
+    const vehicles = getVehiclePlan(riders.length);
+    const assigned = vehicles.map((vehicle, index) => ({ ...vehicle, riders:riders.filter((_, riderIndex) => riderIndex % vehicles.length === index) }));
+    return <div className="min-h-screen bg-uber-gray-50">
+        <TopBar title="Vehicle recommendation"/>
+        <main className="pt-20 pb-28 px-4 space-y-4">
+            <div><p className="text-xs uppercase tracking-widest font-bold text-uber-gray-400">Recommended for your party</p><h2 className="font-display font-bold text-2xl mt-1">{vehicles.map(v=>v.type).join(' + ')}</h2><p className="text-sm text-uber-gray-500 mt-1">Best balance of speed and cost for {riders.length} riders.</p></div>
+            {assigned.map((vehicle, index) => <Card key={index} className="p-4">
+                <div className="flex gap-3"><div className="w-12 h-12 rounded-xl bg-uber-black text-white flex items-center justify-center"><Icon name={vehicle.icon} size={26}/></div><div className="flex-1"><p className="font-display font-bold">Vehicle {index+1} · {vehicle.type}</p><p className="text-xs text-uber-gray-500">{vehicle.why}</p></div><p className="font-bold">${vehicle.price.toFixed(2)}</p></div>
+                <div className="mt-4 pt-3 border-t border-uber-gray-100"><p className="text-[10px] font-bold text-uber-gray-400 uppercase">Passenger assignment</p><div className="flex mt-2 -space-x-2">{vehicle.riders.map(r=><Avatar key={r.id} src={r.img} size={34} className="border-2 border-white"/>)}</div><p className="text-xs mt-2 text-uber-gray-600">{vehicle.riders.map(r=>r.name).join(', ') || 'Assignment updating'}</p></div>
+            </Card>)}
+            <div><p className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Other options</p><Card className="p-3 opacity-70 flex justify-between"><span><b>2× UberX</b><br/><small>Two separate standard cars</small></span><b>$48.20</b></Card><Card className="p-3 opacity-70 flex justify-between mt-2"><span><b>1× Uber Lux XL</b><br/><small>Single premium large vehicle</small></span><b>$89.00</b></Card></div>
+        </main>
+        <div className="fixed bottom-0 inset-x-0 p-4 bg-white border-t border-uber-gray-100"><Btn onClick={()=>nav('/plan')}>Use this recommendation</Btn></div>
+    </div>;
 };
 
 /* ═══════════════════════════════════════════
@@ -583,7 +654,7 @@ const MatchingPage = () => {
                         </div>
                         <div className="flex gap-2 mt-4">
                             <Btn variant="secondary" onClick={handleCancel} full={false} className="flex-1">Cancel</Btn>
-                            <Btn variant="primary" onClick={() => addToast('Group notified!', 'success')} icon="notifications" full={false} className="flex-1" disabled={v1Status!=='matched'&&v2Status!=='matched'}>Notify Group</Btn>
+                            <Btn variant="primary" onClick={() => addToast('Driver details and PIN sent to every rider.', 'success')} icon="notifications" full={false} className="flex-1" disabled={v1Status!=='matched'||v2Status!=='matched'}>Notify Group</Btn>
                         </div>
                     </Card>
                 </div>
@@ -617,7 +688,7 @@ const ConfirmedPage = () => {
                     {/* Timeline */}
                     <Card className="p-4">
                         <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-3">Timeline & Pickup</h3>
-                        {riders.filter(r=>r.vehicle===1).map((r, i, arr) => (
+                        {riders.map((r, i, arr) => (
                             <TimelineItem key={r.id} avatar={r.img} name={`${r.name}${r.me?' (You)':''}`} address={`Pickup: ${r.pickup}`} time={`8:${10+i*6} PM`} status="upcoming"/>
                         ))}
                         <TimelineItem name={DESTINATION.name} address={`Arrival: ${DESTINATION.address}`} time={DESTINATION.eta} status="upcoming" isLast/>
@@ -649,6 +720,7 @@ const ConfirmedPage = () => {
             </main>
             <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-uber-gray-100 p-4 space-y-2">
                 <Btn onClick={() => nav('/trip-room')}>Open Trip Room</Btn>
+                <Btn variant="ghost" onClick={() => { addToast('Your trip will continue in the background.', 'success'); nav('/'); }}>Done</Btn>
                 <Btn variant="secondary" icon="share" onClick={() => addToast('Live status link copied!', 'success')}>Share Live Status</Btn>
             </div>
         </div>
@@ -744,6 +816,13 @@ const TripRoomPage = () => {
                     </div>
                 </div>
 
+                <div className="px-4 mt-3 shrink-0">
+                    <Card className="p-3">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-uber-gray-400 mb-2">Live pickup timeline</p>
+                        <div className="flex gap-2 overflow-x-auto pb-1">{riders.map((r, i) => <div key={r.id} className="min-w-[78px] text-center"><div className={`mx-auto w-7 h-7 rounded-full flex items-center justify-center ${i<=pickupIndex?'bg-uber-success text-white':i===pickupIndex+1?'bg-uber-black text-white':'bg-uber-gray-100 text-uber-gray-400'}`}><Icon name={i<=pickupIndex?'check':i===pickupIndex+1?'directions_car':'schedule'} size={14}/></div><p className="text-[10px] font-semibold mt-1 truncate">{r.name}</p><p className="text-[9px] text-uber-gray-400">{i<=pickupIndex?'Picked up':i===pickupIndex+1?'Current':'Upcoming'}</p></div>)}<div className="min-w-[78px] text-center"><div className="mx-auto w-7 h-7 rounded-full bg-uber-gray-100 flex items-center justify-center"><Icon name="location_on" size={14}/></div><p className="text-[10px] font-semibold mt-1">Arrival</p><p className="text-[9px] text-uber-gray-400">{DESTINATION.eta}</p></div></div>
+                    </Card>
+                </div>
+
                 {/* Chat */}
                 <div className="flex-1 px-4 mt-3 flex flex-col min-h-0">
                     <h3 className="font-display font-bold text-sm mb-2 shrink-0">Trip Activity</h3>
@@ -772,12 +851,14 @@ const TripRoomPage = () => {
                 <div className="px-4 py-2 shrink-0">
                     <div className="flex gap-2 items-center bg-white rounded-xl border border-uber-gray-200 px-3 h-11">
                         <input value={inputVal} onChange={e=>setInputVal(e.target.value)} onKeyDown={e=>e.key==='Enter'&&sendMsg()} className="flex-1 text-sm bg-transparent border-none p-0" placeholder="Message group..."/>
+                        <button aria-label="Attach a photo" onClick={() => addToast('Photo attachment ready.', 'info')} className="text-uber-gray-500"><Icon name="add_photo_alternate" size={19}/></button>
                         <button onClick={sendMsg} className="text-uber-black"><Icon name="send" size={20} fill/></button>
                     </div>
                 </div>
 
                 {/* Simulate Arrival */}
-                <div className="px-4 pb-2 shrink-0">
+                <div className="px-4 pb-2 shrink-0 flex gap-2">
+                    <Btn variant="secondary" onClick={() => showModal({icon:'emergency',iconBg:'bg-red-50',iconColor:'text-uber-danger',title:'Safety emergency',body:'Contact emergency services or Uber Safety. Your Group Trip will continue for other vehicles.',actions:[{label:'Call emergency services',variant:'danger',action:()=>addToast('Emergency support contacted.', 'error')},{label:'Cancel',variant:'secondary'}]})} full={false} className="px-3" icon="emergency">Safety</Btn>
                     <Btn variant="secondary" onClick={() => nav('/complete')}>Simulate Arrival</Btn>
                 </div>
             </main>
@@ -884,6 +965,7 @@ const App = () => (
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/formation" element={<FormationPage/>}/>
                 <Route path="/plan" element={<PlanPage/>}/>
+                <Route path="/vehicles" element={<VehicleRecommendationPage/>}/>
                 <Route path="/matching" element={<MatchingPage/>}/>
                 <Route path="/confirmed" element={<ConfirmedPage/>}/>
                 <Route path="/trip-room" element={<TripRoomPage/>}/>
