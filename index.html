@@ -3,29 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Group Trip - Coordinated Urban Travel</title>
+    <title>GroupTrip - Seamless Coordinated Rides</title>
     
-    <!-- External Libraries -->
+    <!-- Libraries -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
     <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
     <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
+
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
+                    colors: {
                         "surface-dim": "#dadada",
                         "tertiary-container": "#001947",
                         "secondary-container": "#dfe0e0",
@@ -74,13 +72,7 @@
                         "on-secondary-fixed": "#1a1c1c",
                         "surface-variant": "#e2e2e2"
                     },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
+                    spacing: {
                         "lg": "24px",
                         "xl": "32px",
                         "unit": "4px",
@@ -91,30 +83,16 @@
                         "margin-mobile": "16px",
                         "margin-desktop": "40px"
                     },
-                    "fontFamily": {
+                    fontFamily: {
                         "display-lg": ["Plus Jakarta Sans"],
-                        "label-sm": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "body-md": ["Inter"],
                         "headline-md": ["Plus Jakarta Sans"],
-                        "headline-lg-mobile": ["Plus Jakarta Sans"],
-                        "label-md": ["Inter"],
-                        "body-sm": ["Inter"],
-                        "headline-lg": ["Plus Jakarta Sans"]
-                    },
-                    "fontSize": {
-                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
-                        "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "400"}],
-                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
-                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
-                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"]
                     }
-                },
-            },
+                }
+            }
         }
     </script>
 
@@ -123,7 +101,7 @@
             0% { transform: scale(0.8); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        .animate-pop-in { animation: pop-in 0.5s ease-out forwards; }
+        .animate-pop-in { animation: pop-in 0.4s ease-out forwards; }
         
         @keyframes pulse-ring {
             0% { transform: scale(0.33); opacity: 0; }
@@ -132,42 +110,35 @@
         }
         .search-ripple {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border: 2px solid #000;
             border-radius: 50%;
             animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
 
         .custom-shadow-md { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .step-line::before {
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        
+        .trip-line::before {
             content: '';
             position: absolute;
             left: 15px;
             top: 24px;
-            bottom: -8px;
+            bottom: 0;
             width: 2px;
             background-color: #000000;
         }
-        .step-line-last::before { display: none; }
         
-        .active-glow { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        
-        .confetti-canvas {
+        .step-line::after {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
+            left: 15px;
+            top: 32px;
+            height: calc(100% - 16px);
+            width: 2px;
+            background-color: #000;
+            z-index: 0;
         }
     </style>
 <style>
@@ -176,20 +147,20 @@
     }
   </style>
   </head>
-<body class="bg-background text-on-surface font-body-md antialiased">
+<body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect } = React;
         const { createRoot } = ReactDOM;
         const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
 
         // --- Shared Components ---
 
-        const TopAppBar = ({ title = "Group Trip", showBack = true, trailingIcon = "more_vert", livePill = false }) => {
+        const TopAppBar = ({ title, showBack = true, statusLabel }) => {
             const navigate = useNavigate();
             return (
-                <header className="fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-md flex justify-between items-center px-margin-mobile py-sm border-b border-outline-variant/30 h-16">
+                <header className="fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-md flex justify-between items-center px-margin-mobile py-sm border-b border-outline-variant/10">
                     <div className="flex items-center gap-md">
                         {showBack && (
                             <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-container-high transition-colors rounded-full text-primary active:opacity-70">
@@ -198,54 +169,63 @@
                         )}
                         <h1 className="font-headline-md text-headline-md font-bold text-primary">{title}</h1>
                     </div>
-                    <div className="flex items-center gap-sm">
-                        {livePill && <span className="font-label-md text-label-md bg-secondary-container px-2 py-0.5 rounded text-primary">LIVE</span>}
+                    <div className="flex items-center gap-xs">
+                        {statusLabel && (
+                            <span className="font-label-md text-label-md bg-secondary-container px-2 py-0.5 rounded text-primary">{statusLabel}</span>
+                        )}
                         <button className="p-2 hover:bg-surface-container-high transition-colors rounded-full text-primary active:opacity-70">
-                            <span className="material-symbols-outlined">{trailingIcon}</span>
+                            <span className="material-symbols-outlined">more_vert</span>
                         </button>
                     </div>
                 </header>
             );
         };
 
-        const BottomNav = ({ active = "home" }) => (
-            <nav className="fixed bottom-0 left-0 w-full flex justify-around items-center bg-surface border-t border-outline-variant shadow-md h-16 z-50 px-4 pb-safe">
-                {[
-                    { id: 'home', icon: 'home', label: 'Home' },
-                    { id: 'activity', icon: 'history', label: 'Activity' },
-                    { id: 'account', icon: 'person', label: 'Account' },
-                    { id: 'safety', icon: 'shield', label: 'Safety' }
-                ].map(item => (
-                    <div key={item.id} className={`flex flex-col items-center justify-center transition-all cursor-pointer ${active === item.id ? 'text-primary font-bold' : 'text-on-secondary-container opacity-60'}`}>
-                        <span className="material-symbols-outlined text-[24px]" style={active === item.id ? { fontVariationSettings: "'FILL' 1" } : {}}>{item.icon}</span>
-                        <span className="font-label-sm text-label-sm">{item.label}</span>
-                    </div>
-                ))}
-            </nav>
-        );
+        const BottomNav = ({ active }) => {
+            const navItems = [
+                { id: 'home', icon: 'home', label: 'Home', path: '/' },
+                { id: 'activity', icon: 'history', label: 'Activity', path: '/activity' },
+                { id: 'account', icon: 'person', label: 'Account', path: '/account' },
+                { id: 'safety', icon: 'shield', label: 'Safety', path: '/safety' }
+            ];
+
+            return (
+                <nav className="fixed bottom-0 left-0 w-full flex justify-around items-center bg-surface border-t border-outline-variant shadow-md h-16 z-50 px-4 pb-safe">
+                    {navItems.map(item => (
+                        <Link 
+                            key={item.id} 
+                            to={item.path} 
+                            className={`flex flex-col items-center justify-center transition-all ${active === item.id ? 'text-primary font-bold scale-105' : 'text-on-secondary-container hover:opacity-80'}`}
+                        >
+                            <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: active === item.id ? "'FILL' 1" : "'FILL' 0" }}>{item.icon}</span>
+                            <span className="font-label-sm text-label-sm">{item.label}</span>
+                        </Link>
+                    ))}
+                </nav>
+            );
+        };
 
         // --- Screen Components ---
 
-        // Screen 1: Home / Start Selection
-        const HomeScreen = () => {
+        const HomePage = () => {
             const navigate = useNavigate();
             return (
-                <div className="flex flex-col min-h-screen">
-                    <TopAppBar showBack={false} />
-                    <main className="flex-grow pt-16 relative">
+                <div className="flex flex-col min-h-screen text-on-surface">
+                    <TopAppBar title="Group Trip" showBack={false} />
+                    <main className="flex-grow pt-16 relative bg-surface">
                         <div className="absolute inset-0 z-0">
-                            <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u')" }}></div>
+                            <div className="w-full h-full bg-cover bg-center grayscale opacity-60" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u")'}}></div>
                         </div>
                         <div className="relative z-10 px-margin-mobile py-lg flex flex-col gap-md">
                             <div className="bg-surface-container-lowest custom-shadow-md rounded-xl p-md flex flex-col gap-sm">
                                 <div className="flex items-start gap-md">
-                                    <div className="flex flex-col items-center py-2 gap-1">
+                                    <div className="flex flex-col items-center py-2 gap-1 h-full">
                                         <div className="w-2 h-2 rounded-full bg-primary"></div>
                                         <div className="w-0.5 h-12 bg-outline-variant"></div>
                                         <div className="w-2 h-2 bg-primary"></div>
                                     </div>
                                     <div className="flex-grow flex flex-col gap-sm">
-                                        <div className="bg-surface-container-low p-sm rounded-lg flex items-center justify-between border-b-2 border-transparent">
+                                        <div className="bg-surface-container-low p-sm rounded-lg flex items-center justify-between">
                                             <span className="font-label-md text-label-md text-on-surface">Current Location</span>
                                             <span className="material-symbols-outlined text-secondary text-[20px]">my_location</span>
                                         </div>
@@ -257,7 +237,7 @@
                                 </div>
                             </div>
 
-                            <button onClick={() => navigate('/assemble')} className="bg-primary text-on-primary rounded-xl flex flex-col gap-sm text-left custom-shadow-md hover:opacity-90 active:scale-[0.98] transition-all p-md relative overflow-hidden group">
+                            <button onClick={() => navigate('/join-lobby')} className="bg-primary text-on-primary rounded-xl flex flex-col gap-sm text-left custom-shadow-md hover:opacity-90 active:scale-[0.98] transition-all group overflow-hidden relative p-md">
                                 <div className="flex items-center justify-between w-full relative z-10">
                                     <div className="flex flex-col gap-xs">
                                         <div className="flex items-center gap-sm">
@@ -271,8 +251,7 @@
                                 <div className="flex items-center justify-between mt-sm relative z-10 w-full">
                                     <p className="font-label-sm text-label-sm text-surface-variant/70">We'll coordinate pickups automatically.</p>
                                     <div className="flex -space-x-2">
-                                        <div className="w-6 h-6 rounded-full border-2 border-primary bg-surface-container bg-cover" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuB6LbQQRAFv9A1ECqvYrpuoHcKT6JLJlUdRK-63rv5s_VUt-6lleNEObHJrghgAyjgvXau7_PdrYYw-3Bvr3ICl-qolDjgBeIqpwHepOi3CnaWO0C-K02uIdyd1iFmzIvSWEcnXWWjwbXQ-HXxh3tmyjsrL_rIlab_SeT_RK-dwyJsjaIClu2cx4s1LntfB5cWcn7USoBZmRU-fz5QGKxVuyScHd-u0AKIhtQPs2q8611tyaqT7U863')"}}></div>
-                                        <div className="w-6 h-6 rounded-full border-2 border-primary bg-surface-container bg-cover" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBvdYjSFc7Dv2PQuFmTR-GpR9HfLt3tqbF_nABsnxwN37aRZV41HqkK5d9100lBTJ5QipL5qOJuJCLvq7oNHB3S6cBFfCBHtjGXXr6XrLTmhFAxgGsq1zIG0PwIGGQRH7nqzMIgA_VxRa6VuW59ERa8iHTvwRNaU05cJXzi2CrPxBahNIeb8U3yL0rwsCoYQ2QbMgvpRmbvFX19j0k7qqdqraaQipn941DOnpurq_oeFpfArgXFrC2Z')"}}></div>
+                                        {[1,2].map(i => <div key={i} className="w-6 h-6 rounded-full border-2 border-primary bg-surface-container bg-cover" style={{backgroundImage: `url('https://images.unsplash.com/photo-${i === 1 ? '1500648767791-00dcc994a43e' : '1438761681033-6461ffad8d80'}?auto=format&fit=crop&q=80&w=100&h=100')`}}></div>)}
                                         <div className="w-6 h-6 rounded-full border-2 border-primary bg-secondary flex items-center justify-center text-[8px] font-bold text-on-primary">+4</div>
                                     </div>
                                 </div>
@@ -281,24 +260,17 @@
                             <div className="flex flex-col gap-xs mt-sm">
                                 <h3 className="font-label-md text-label-md text-secondary mb-2 px-sm uppercase tracking-wider">Recent Destinations</h3>
                                 <div className="bg-surface-container-lowest rounded-xl overflow-hidden divide-y divide-outline-variant/30 custom-shadow-md">
-                                    <button className="w-full p-md flex items-center gap-md hover:bg-surface-container-high transition-colors text-left">
-                                        <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
-                                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>home</span>
-                                        </div>
-                                        <div className="flex-grow">
-                                            <p className="font-label-md text-label-md font-bold">Home</p>
-                                            <p className="font-body-sm text-body-sm text-secondary">245 Market Street, San Francisco</p>
-                                        </div>
-                                    </button>
-                                    <button className="w-full p-md flex items-center gap-md hover:bg-surface-container-high transition-colors text-left">
-                                        <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
-                                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>work</span>
-                                        </div>
-                                        <div className="flex-grow">
-                                            <p className="font-label-md text-label-md font-bold">Office</p>
-                                            <p className="font-body-sm text-body-sm text-secondary">1550 Bryant St, San Francisco</p>
-                                        </div>
-                                    </button>
+                                    {['Home', 'Office', 'Chase Center'].map((place, idx) => (
+                                        <button key={idx} className="w-full p-md flex items-center gap-md hover:bg-surface-container-high transition-colors text-left">
+                                            <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+                                                <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>{idx === 0 ? 'home' : idx === 1 ? 'work' : 'schedule'}</span>
+                                            </div>
+                                            <div className="flex-grow">
+                                                <p className="font-label-md text-label-md font-bold">{place}</p>
+                                                <p className="font-body-sm text-body-sm text-secondary">San Francisco, CA</p>
+                                            </div>
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -308,86 +280,67 @@
             );
         };
 
-        // Screen 2: Waiting Room / Participants
-        const AssembleScreen = () => {
+        const JoinLobbyPage = () => {
             const navigate = useNavigate();
-            const [statusIndex, setStatusIndex] = useState(0);
-            const statusMessages = ["Sarah joined", "Finding nearby pickups...", "Jordan joined", "Recalculating route...", "Sam joined", "Selecting best vehicle..."];
-            
+            const [status, setStatus] = useState("Optimizing route for 7 people...");
+            const friends = [
+                { name: 'Alex', me: true, img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e' },
+                { name: 'Marcus', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e' },
+                { name: 'Sarah', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80' },
+                { name: 'John', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d' },
+                { name: 'James', img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6' },
+                { name: 'Harvey', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d' },
+                { name: 'Mike', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7' }
+            ];
+
             useEffect(() => {
-                const interval = setInterval(() => {
-                    setStatusIndex(prev => (prev + 1) % statusMessages.length);
-                }, 2000);
-                return () => clearInterval(interval);
+                const timer = setTimeout(() => navigate('/plan-overview'), 3000);
+                return () => clearTimeout(timer);
             }, []);
 
             return (
-                <div className="bg-background min-h-screen flex flex-col">
-                    <TopAppBar livePill={true} />
-                    <main className="relative pt-14 pb-16 flex-grow flex flex-col">
-                        <div className="absolute inset-0 z-0 overflow-hidden">
-                            <div className="w-full h-full bg-cover bg-center grayscale contrast-75 brightness-110 opacity-60" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrllAlaY0KVFFaXnqPfuvpwcqYHP84bxa9xSZqW1zzvy9WktZhKEyUhtG6keBLSf3nMdOogVWCTRGlUKrJogk7ZNpLw0erP4uKUwSS2eob3xAyxoYtBg8KbtqG5pqXBdc3Z8AbjWyqdcGlHdxUYJae9Ji9jT7ktM4GxvgjS0ziFK4B8A6xsNWFfJ4fMGp_XodMA8ETmmVMbK8oyCZQmMo9FNo84h6GPpRrIhDVOOUFxzQ9WsvwBko_')" }}></div>
-                            <div className="absolute inset-0 pointer-events-none">
-                                <div className="absolute top-[30%] left-[40%] animate-pop-in bg-primary text-on-primary w-8 h-8 rounded-full flex items-center justify-center shadow-md border-2 border-surface">
-                                    <span className="material-symbols-outlined text-[18px]" style={{fontVariationSettings: "'FILL' 1"}}>person_pin_circle</span>
+                <div className="bg-background text-on-surface font-body-md min-h-screen">
+                    <TopAppBar title="Group Trip" statusLabel="LIVE" />
+                    <main className="relative pt-14 pb-16 flex flex-col min-h-screen">
+                        <div className="absolute inset-0 z-0 overflow-hidden bg-surface-dim/20">
+                            <div className="w-full h-full bg-cover bg-center grayscale opacity-40" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrllAlaY0KVFFaXnqPfuvpwcqYHP84bxa9xSZqW1zzvy9WktZhKEyUhtG6keBLSf3nMdOogVWCTRGlUKrJogk7ZNpLw0erP4uKUwSS2eob3xAyxoYtBg8KbtqG5pqXBdc3Z8AbjWyqdcGlHdxUYJae9Ji9jT7ktM4GxvgjS0ziFK4B8A6xsNWFfJ4fMGp_XodMA8ETmmVMbK8oyCZQmMo9FNo84h6GPpRrIhDVOOUFxzQ9WsvwBko_')"}}></div>
+                        </div>
+                        <div className="relative z-10 mt-auto px-margin-mobile pb-lg max-w-xl mx-auto w-full">
+                            <div className="bg-surface/90 backdrop-blur-md rounded-xl p-md shadow-md mb-md border border-outline-variant/30 overflow-hidden relative">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-surface-container">
+                                    <div className="h-full bg-primary transition-all duration-1000 ease-linear" style={{width: '65%'}}></div>
                                 </div>
-                                <div className="absolute top-[45%] left-[55%] animate-pop-in bg-surface-container-lowest text-primary w-8 h-8 rounded-full flex items-center justify-center shadow-md border-2 border-primary">
-                                    <span className="material-symbols-outlined text-[18px]">location_on</span>
+                                <div className="flex flex-col gap-xs pt-2">
+                                    <div className="flex items-center gap-sm text-on-surface-variant opacity-60">
+                                        <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                                        <span className="text-label-sm">Marcus joined</span>
+                                    </div>
+                                    <div className="flex items-center gap-sm text-primary font-bold animate-pulse">
+                                        <span className="material-symbols-outlined text-[18px]" style={{fontVariationSettings: "'FILL' 1"}}>sync</span>
+                                        <span className="text-label-md">{status}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div className="relative z-10 mt-auto px-margin-mobile pb-24 max-w-xl mx-auto w-full">
-                            <div className="bg-surface/90 backdrop-blur-md rounded-xl p-md shadow-lg mb-md border border-outline-variant/30 overflow-hidden">
-                                <div className="h-1 bg-surface-container mb-2">
-                                    <div className="h-full bg-primary transition-all duration-1000 ease-linear" style={{ width: `${(statusIndex + 1) * 16}%` }}></div>
+                            <div className="bg-surface-container-lowest rounded-xl shadow-md border border-outline-variant/50 p-md flex flex-col gap-md">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="font-headline-md text-headline-md text-primary">Participants</h2>
+                                    <span className="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-2 py-1 rounded-full">7 Joined</span>
                                 </div>
-                                <div className="flex flex-col gap-xs">
-                                    {statusMessages.slice(0, statusIndex + 1).map((msg, i) => (
-                                        <div key={i} className={`flex items-center gap-sm ${i === statusIndex ? 'text-primary font-bold animate-pulse' : 'text-on-surface-variant opacity-60'}`}>
-                                            <span className="material-symbols-outlined text-[16px]">{i === statusIndex ? 'sync' : 'check_circle'}</span>
-                                            <span className="text-label-md">{msg}</span>
+                                <div className="flex flex-wrap gap-md">
+                                    {friends.map((f, i) => (
+                                        <div key={i} className="flex flex-col items-center gap-xs animate-pop-in" style={{animationDelay: `${i * 0.1}s`}}>
+                                            <div className={`relative w-16 h-16 rounded-full border-2 ${f.me ? 'border-primary' : 'border-outline-variant'} p-0.5`}>
+                                                <div className="w-full h-full rounded-full bg-cover bg-center" style={{backgroundImage: `url('${f.img}?auto=format&fit=crop&q=80&w=100&h=100')`}}></div>
+                                                {f.me && <div className="absolute -bottom-1 -right-1 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">ME</div>}
+                                            </div>
+                                            <span className="font-label-md text-label-md text-primary">{f.name}</span>
                                         </div>
                                     ))}
                                 </div>
-                            </div>
-
-                            <div className="bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant/50 p-md flex flex-col gap-md">
-                                <div className="flex justify-between items-center">
-                                    <h2 className="font-headline-md text-headline-md text-primary">Participants</h2>
-                                    <span className="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-2 py-1 rounded-full">3 Joined</span>
-                                </div>
-                                <div className="flex flex-wrap gap-md">
-                                    <div className="flex flex-col items-center gap-xs animate-pop-in">
-                                        <div className="relative w-16 h-16 rounded-full border-2 border-primary p-0.5">
-                                            <div className="w-full h-full rounded-full bg-cover bg-center" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCt8Rl_RxCdlMPVvQWUH_Qp4IkWXGyW1vBNgZJzF9kJ_xspnTusLM5DtiZL-QTrxmzbseQVki-lZiKc_DLqf26lM2Oc32yfZW5uh5EajWrIGH9NAYiA6Jb4T7dAqN7Q7qVE8wwvln3eKOd3WQZJFIv3U00eUpGKWHFuO2W-Sb5hXJcxxDP3AGez5dVsF7qfpPqpT_atKtk-R57lNpy3mOxA4l7q7pmd-VZHGr2TsZBnU3eoDdr-77Qq')"}}></div>
-                                            <div className="absolute -bottom-1 -right-1 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">ME</div>
-                                        </div>
-                                        <span className="font-label-md text-label-md text-primary">Alex</span>
-                                    </div>
-                                    <div className="flex flex-col items-center gap-xs animate-pop-in delay-100">
-                                        <div className="w-16 h-16 rounded-full border-2 border-outline-variant p-0.5">
-                                            <div className="w-full h-full rounded-full bg-cover bg-center" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCeXV4VCn0JzZHTmQJf_dp7AvviMuhfrxsSvJTMr9NLWaESqRB6CSxUjiEn-aiVNpxr01JXKV5M1czcEN6o0aXyHE4TlW5N_L7IvhkhGV6m2y804DWJpXZ2YsFJrY5ckyDEZm8G2l68R3mkyhpKqjmEq-iX6fNDqwPjR_Nca50gsNdfPmrQV8zW9yxmFhQlVxU1-R2pRejO1fIoZSnJcygLGPpbiO-ycNJ8yyPoqQwGIEJnp6au2SBF')"}}></div>
-                                        </div>
-                                        <span className="font-label-md text-label-md text-primary">Jordan</span>
-                                    </div>
-                                    <div className="flex flex-col items-center gap-xs animate-pop-in delay-200">
-                                        <div className="w-16 h-16 rounded-full border-2 border-outline-variant p-0.5">
-                                            <div className="w-full h-full rounded-full bg-cover bg-center" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDTupQ1HGhB9MkYHE33CPVjfWFcXn9gZi7TMw5Pdzh-7pnesWyjkM0uFgBkhULaqMFAiXAKH8iL1WDoenWGS9v3UgMJWcmbvHkiEHVu2XaPfmSlgGQBW4yar9L2fxul3L20ee6uYkIwMQRyRkiRIPeC4Ij8SN91oosfAQhB4U_S-KwpUIYpUssUgs06uhIUriweBEAcc2Ro8cbGSBv2knS_aRkWaYVUeSV1U9N_WZjBHz3W5nAfKgqZ')"}}></div>
-                                        </div>
-                                        <span className="font-label-md text-label-md text-primary">Sam</span>
-                                    </div>
-                                    <div className="flex flex-col items-center gap-xs">
-                                        <div className="w-16 h-16 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center bg-surface-low animate-pulse">
-                                            <span className="material-symbols-outlined text-outline">add</span>
-                                        </div>
-                                        <span className="font-label-md text-label-md text-on-surface-variant italic">Waiting...</span>
-                                    </div>
-                                </div>
                                 <div className="border-t border-outline-variant pt-md">
-                                    <button onClick={() => navigate('/plan')} className="w-full bg-primary text-on-primary font-bold py-md rounded-lg flex items-center justify-center gap-sm hover:opacity-90 active:scale-95 transition-all">
-                                        <span className="material-symbols-outlined">rocket_launch</span>
-                                        <span className="">Generate Optimized Plan</span>
+                                    <button className="w-full bg-primary text-on-primary font-bold py-md rounded-lg flex items-center justify-center gap-sm hover:opacity-90 transition-opacity">
+                                        <span className="material-symbols-outlined">share</span>
+                                        <span>Invite more friends</span>
                                     </button>
                                 </div>
                             </div>
@@ -398,37 +351,26 @@
             );
         };
 
-        // Screen 3: Route Plan Details
-        const PlanScreen = () => {
+        const PlanOverviewPage = () => {
             const navigate = useNavigate();
             return (
-                <div className="bg-background min-h-screen flex flex-col">
+                <div className="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
                     <TopAppBar title="Group Plan" />
                     <main className="flex-grow pt-14 pb-32">
                         <div className="relative w-full h-[240px] overflow-hidden">
-                            <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u')" }}></div>
+                            <div className="w-full h-full bg-cover bg-center grayscale" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u')"}}></div>
                             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur px-4 py-1.5 rounded-full border border-outline-variant shadow-sm flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary text-[18px]">route</span>
                                 <span className="font-label-md text-label-md text-primary font-bold">6.4 miles • 22 min</span>
                             </div>
                         </div>
                         <div className="bg-surface-container-lowest border-b border-outline-variant px-margin-mobile py-md grid grid-cols-4 gap-2">
-                            <div className="text-center">
-                                <p className="font-label-sm text-[10px] uppercase text-on-surface-variant tracking-wider">Total Cost</p>
-                                <p className="font-label-md text-primary font-bold">$42.50</p>
-                            </div>
-                            <div className="text-center border-l border-outline-variant/30">
-                                <p className="font-label-sm text-[10px] uppercase text-on-surface-variant tracking-wider">Per Person</p>
-                                <p className="font-label-md text-primary font-bold">$10.60</p>
-                            </div>
-                            <div className="text-center border-l border-outline-variant/30">
-                                <p className="font-label-sm text-[10px] uppercase text-on-surface-variant tracking-wider">Vehicles</p>
-                                <p className="font-label-md text-primary font-bold">1 XL</p>
-                            </div>
-                            <div className="text-center border-l border-outline-variant/30">
-                                <p className="font-label-sm text-[10px] uppercase text-on-surface-variant tracking-wider">Arrival</p>
-                                <p className="font-label-md text-primary font-bold">8:32 PM</p>
-                            </div>
+                            {[{l:'Cost', v:'$42.50'}, {l:'Riders', v:'7 Total'}, {l:'Vehicles', v:'2 (X, XL)'}, {l:'Arrival', v:'8:32 PM'}].map((s,i) => (
+                                <div key={i} className={`text-center ${i > 0 ? 'border-l border-outline-variant/30' : ''}`}>
+                                    <p className="font-label-sm text-[10px] uppercase text-on-surface-variant tracking-wider">{s.l}</p>
+                                    <p className="font-label-md text-primary font-bold">{s.v}</p>
+                                </div>
+                            ))}
                         </div>
                         <div className="px-margin-mobile mt-md space-y-lg">
                             <section>
@@ -440,60 +382,46 @@
                                     </div>
                                 </div>
                                 <div className="bg-surface-container-lowest rounded-xl border-2 border-primary shadow-lg overflow-hidden">
-                                    <div className="p-md">
-                                        <div className="flex justify-between items-start mb-md">
+                                    <div className="p-md space-y-md">
+                                        <div className="flex justify-between items-center">
                                             <div className="flex items-center gap-md">
-                                                <div className="w-16 h-16 bg-surface-container rounded-lg overflow-hidden border border-outline-variant/30">
-                                                    <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGIB1KM_cLsXGdCyCyaKVot5ajR_Da1e0_KXIdtkJ3zKMZ4-nP4Rua9N6x8Tvzc3tHtkFe14ggFUxyU2sibcSZqCydXRSDdqWdVDu-aPyeFEn5kI92sKFANQf2Al3UUWPvM1jmuB4byx4WNm_fWH7Gw8aDsgxLirErYIntd749jjomMOlBQ7V4H7QRXkRk0s0-CeQkYLW6PHa6yOlmep-S-OkDD13RepC5BefPGsL6CgiYXtSztd7d" alt="Uber XL" />
-                                                </div>
-                                                <div>
-                                                    <div className="flex items-center gap-1">
-                                                        <h3 className="font-headline-md text-primary">Uber XL</h3>
-                                                        <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
-                                                    </div>
-                                                    <p className="font-body-sm text-on-surface-variant">4-5 passengers</p>
-                                                </div>
+                                                <div className="w-10 h-10 bg-surface-container rounded-lg overflow-hidden flex items-center justify-center"><span className="material-symbols-outlined">directions_car</span></div>
+                                                <div><h3 className="font-label-md font-bold text-primary">Uber X</h3><p className="font-body-sm text-on-surface-variant">3 passengers</p></div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="font-headline-md text-primary">$42.50</p>
-                                                <p className="font-label-sm text-on-surface-variant">Total Fare</p>
+                                            <p className="font-label-md font-bold text-primary">$18.20</p>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center gap-md">
+                                                <div className="w-10 h-10 bg-surface-container rounded-lg overflow-hidden flex items-center justify-center"><span className="material-symbols-outlined">airport_shuttle</span></div>
+                                                <div><h3 className="font-label-md font-bold text-primary">Uber XL</h3><p className="font-body-sm text-on-surface-variant">4 passengers</p></div>
                                             </div>
+                                            <p className="font-label-md font-bold text-primary">$24.30</p>
                                         </div>
                                         <div className="p-sm bg-tertiary-container/5 rounded-lg border border-tertiary-container/10">
-                                            <p className="font-body-sm text-on-surface-variant leading-relaxed">
-                                                <span className="material-symbols-outlined text-[16px] text-on-tertiary-container align-middle mr-1">info</span>
-                                                One vehicle keeps the group together and minimizes total cost.
-                                            </p>
+                                            <p className="font-body-sm text-on-surface-variant"><span className="material-symbols-outlined text-[16px] mr-1 align-middle">info</span>Split into two vehicles to accommodate the group.</p>
                                         </div>
                                     </div>
-                                    <button onClick={() => navigate('/matching')} className="w-full bg-primary text-on-primary py-md font-bold hover:bg-black/90 transition-colors">
-                                        Request Uber XL
-                                    </button>
+                                    <button onClick={() => navigate('/matching')} className="w-full bg-primary text-on-primary py-md font-bold hover:bg-black/90 transition-colors">Request Both Vehicles</button>
                                 </div>
                             </section>
+
                             <section>
                                 <h3 className="font-label-md text-on-surface-variant uppercase tracking-widest mb-md">Pickup Sequence</h3>
                                 <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant relative">
                                     <div className="absolute left-[31px] top-8 bottom-8 w-[2px] bg-primary"></div>
                                     <div className="space-y-lg relative">
-                                        <div className="flex items-start gap-md">
-                                            <div className="w-8 h-8 rounded-full border-2 border-primary bg-background z-10 shrink-0 overflow-hidden">
-                                                <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTwSCG7soanTWQwMd9C1rvQguCqx8PQJjt6mCbTzQWkwNHibY1HmgTaHf_1_22rW1EszD-gHPk-BKiHoQlOO80-85AVp6grysQL5dH_QDtxtU4yAPJg7v8o07232gKhddtx0kpCvS0dzrDlmkdCj8ZN0n4HX-5Sd9Vj1hZBPqJFc1gSCsU5u56G5Z0ToEFYhdHDnOS0kqNNQQfsMjfZKxCEfLvfPOR1q__zz0nT6lEAoVIkhFimXPc" alt="Alex" />
+                                        {['AJ', 'MW', 'SM', 'JD'].map((initials, i) => (
+                                            <div key={i} className="flex items-start gap-md">
+                                                <div className="w-8 h-8 rounded-full border-2 border-primary bg-background z-10 shrink-0 flex items-center justify-center font-bold text-[10px]">{initials}</div>
+                                                <div className="flex-grow pt-0.5">
+                                                    <div className="flex justify-between">
+                                                        <p className="font-label-md font-bold text-primary">{i === 0 ? 'Alex Johnson (You)' : 'Rider ' + (i+1)}</p>
+                                                        <p className="font-label-sm text-on-surface-variant">8:{10 + i*2} PM</p>
+                                                    </div>
+                                                    <p className="font-body-sm text-secondary">Pickup Location Address</p>
+                                                </div>
                                             </div>
-                                            <div className="flex-grow pt-0.5">
-                                                <div className="flex justify-between"><p className="font-label-md font-bold text-primary">Alex Johnson (You)</p><p className="font-label-sm text-on-surface-variant">8:10 PM</p></div>
-                                                <p className="font-body-sm text-secondary">Pickup: 224 Battery St</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-start gap-md">
-                                            <div className="w-8 h-8 rounded-full border-2 border-primary bg-background z-10 shrink-0 overflow-hidden">
-                                                <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqqZp32qW9WGaJS14yVfCMIr6_ucZvYTF-OfzYECUra7X9jAJqhfa4asvdSM5yLNFbdllgvKFhF3h1l3sVRol4SZ8ZWQiKt0oEHHetsWZTa4uY20_xzUpidCjp21CmiDL916vKPXuZcoW56qmnc3ujEVAhC1Hf_0jg4m6iSmkNExvw-fM4dQePYU2iMDDyTEz7sh7xt1DSi_f6NXKxvNPC5Zw0tfh3iCaVexPJA2syPz7SbrQaV90_" alt="Sarah" />
-                                            </div>
-                                            <div className="flex-grow pt-0.5">
-                                                <div className="flex justify-between"><p className="font-label-md font-bold text-primary">Sarah Miller</p><p className="font-label-sm text-on-surface-variant">8:14 PM</p></div>
-                                                <p className="font-body-sm text-secondary">Pickup: 450 Post St</p>
-                                            </div>
-                                        </div>
+                                        ))}
                                     </div>
                                 </div>
                             </section>
@@ -501,9 +429,7 @@
                     </main>
                     <div className="fixed bottom-0 left-0 w-full z-50">
                         <div className="px-margin-mobile pb-sm pt-4 bg-gradient-to-t from-background via-background to-transparent">
-                            <button onClick={() => navigate('/matching')} className="w-full bg-primary text-on-primary py-md rounded-lg font-headline-md text-headline-md shadow-xl active:scale-[0.98] transition-transform">
-                                Confirm Group Plan
-                            </button>
+                            <button onClick={() => navigate('/matching')} className="w-full bg-primary text-on-primary py-md rounded-lg font-headline-md text-headline-md shadow-xl active:scale-[0.98] transition-transform">Confirm Group Plan</button>
                         </div>
                         <BottomNav active="activity" />
                     </div>
@@ -511,62 +437,57 @@
             );
         };
 
-        // Screen 4: Driver Matching Simulation
-        const MatchingScreen = () => {
+        const MatchingPage = () => {
             const navigate = useNavigate();
             const [v2Matched, setV2Matched] = useState(false);
 
             useEffect(() => {
                 const timer = setTimeout(() => setV2Matched(true), 4000);
-                const finalTimer = setTimeout(() => navigate('/confirmation'), 7000);
-                return () => { clearTimeout(timer); clearTimeout(finalTimer); };
-            }, [navigate]);
+                const finalNav = setTimeout(() => navigate('/confirmed'), 7000);
+                return () => { clearTimeout(timer); clearTimeout(finalNav); };
+            }, []);
 
             return (
                 <div className="bg-background min-h-screen overflow-hidden">
-                    <TopAppBar />
+                    <TopAppBar title="Group Trip" />
                     <main className="relative h-screen w-full pt-16">
-                        <div className="absolute inset-0 bg-surface-container-low grayscale opacity-80 bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmkMIuycw69EGBSYhEp30nsp1yPn3VvqCWUcHQs4oNMRJWTNFwUnadC5vqlAQbpTpfnEPUvNWZDlLpvzAAOqUGB8ybcX3K9uw6_PmFAoCEjh9B-c-N2-Vm9WrrU1pZrNjTjVVPkJy96MLt--V5Dqa2LYZk7SLjKNXBrJkm_8Tcz0OICEpST-W6VZYJLSiSrVc_76RUA48scRDtcNniJ-F-WXvN-INNZJ1BM-6G3_RHkNlUvMo7G3AJ')" }}></div>
-                        
+                        <div className="absolute inset-0 bg-surface-container-low grayscale opacity-60" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmkMIuycw69EGBSYhEp30nsp1yPn3VvqCWUcHQs4oNMRJWTNFwUnadC5vqlAQbpTpfnEPUvNWZDlLpvzAAOqUGB8ybcX3K9uw6_PmFAoCEjh9B-c-N2-Vm9WrrU1pZrNjTjVVPkJy96MLt--V5Dqa2LYZk7SLjKNXBrJkm_8Tcz0OICEpST-W6VZYJLSiSrVc_76RUA48scRDtcNniJ-F-WXvN-INNZJ1BM-6G3_RHkNlUvMo7G3AJ')", backgroundSize: 'cover'}}></div>
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                             <div className="search-ripple"></div>
-                            <div className="w-4 h-4 bg-primary rounded-full shadow-md relative z-10 border-2 border-white"></div>
+                            <div className="w-4 h-4 bg-primary rounded-full relative z-10 border-2 border-white"></div>
                         </div>
-
-                        <div className="absolute inset-x-0 bottom-24 p-margin-mobile flex flex-col items-center">
-                            <div className="bg-surface shadow-lg rounded-xl w-full max-w-md border border-outline-variant overflow-hidden">
-                                <div className="p-md">
-                                    <h2 className="font-headline-md text-primary mb-md">Assembling your trip...</h2>
-                                    <div className="space-y-md">
-                                        <div className="bg-surface-container-low p-md rounded-lg border border-outline-variant/30 flex items-center gap-md">
-                                            <div className="relative">
-                                                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white"><span className="material-symbols-outlined">directions_car</span></div>
-                                                <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center border-2 border-surface"><span className="material-symbols-outlined text-[12px] text-white">check</span></div>
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="flex justify-between items-baseline"><span className="font-label-md text-primary font-bold">Vehicle 1 • UberX</span><span className="text-green-600 font-label-sm font-bold uppercase">Matched</span></div>
-                                                <p className="text-body-sm text-secondary">Driver: Michael • Toyota Camry</p>
+                        
+                        <div className="absolute inset-0 flex flex-col justify-end p-margin-mobile pb-24 pointer-events-none">
+                            <div className="bg-surface shadow-md rounded-xl w-full max-w-md mx-auto pointer-events-auto border border-outline-variant p-md">
+                                <h2 className="font-headline-md text-headline-md text-primary mb-xs">Assembling your trip...</h2>
+                                <p className="text-on-secondary-container font-label-md mb-md">Optimizing for 2 vehicles and 7 stops</p>
+                                
+                                <div className="space-y-md">
+                                    <div className="bg-surface-container-low p-md rounded-lg border border-outline-variant/30 flex items-center gap-md">
+                                        <div className="relative w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                                            <span className="material-symbols-outlined">directions_car</span>
+                                            <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center border-2 border-surface">
+                                                <span className="material-symbols-outlined text-[12px] font-bold">check</span>
                                             </div>
                                         </div>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between"><span className="font-label-md text-primary font-bold">Vehicle 1 • UberX</span><span className="text-green-600 font-label-sm font-bold">MATCHED</span></div>
+                                            <p className="text-body-sm text-secondary">Driver: Michael • Toyota Camry</p>
+                                        </div>
+                                    </div>
 
-                                        <div className={`bg-surface-container-low p-md rounded-lg border border-primary/20 flex items-center gap-md transition-all duration-500 ${v2Matched ? '' : 'opacity-80'}`}>
-                                            <div className="relative">
-                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${v2Matched ? 'bg-primary text-white' : 'bg-secondary-container'}`}><span className="material-symbols-outlined">directions_car</span></div>
-                                                {v2Matched && <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center border-2 border-surface animate-pop-in"><span className="material-symbols-outlined text-[12px] text-white">check</span></div>}
+                                    <div className={`p-md rounded-lg border transition-all duration-500 flex items-center gap-md relative overflow-hidden ${v2Matched ? 'bg-surface-container-low border-outline-variant/30' : 'bg-surface-container border-primary/20'}`}>
+                                        {!v2Matched && <div className="absolute bottom-0 left-0 h-1 bg-primary animate-pulse w-full"></div>}
+                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${v2Matched ? 'bg-primary text-white' : 'bg-secondary-container text-primary'}`}>
+                                            <span className="material-symbols-outlined">airport_shuttle</span>
+                                            {v2Matched && <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center border-2 border-surface"><span className="material-symbols-outlined text-[12px] font-bold">check</span></div>}
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between">
+                                                <span className="font-label-md text-primary font-bold">Vehicle 2 • UberXL</span>
+                                                <span className={`${v2Matched ? 'text-green-600' : 'text-primary/60'} font-label-sm font-bold uppercase`}>{v2Matched ? 'MATCHED' : 'SEARCHING...'}</span>
                                             </div>
-                                            <div className="flex-1">
-                                                <div className="flex justify-between items-baseline">
-                                                    <span className="font-label-md text-primary font-bold">Vehicle 2 • UberXL</span>
-                                                    {v2Matched ? <span className="text-green-600 font-label-sm font-bold uppercase animate-pop-in">Matched</span> : (
-                                                        <div className="flex items-center gap-xs">
-                                                            <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></span>
-                                                            <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-bounce delay-75"></span>
-                                                            <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-bounce delay-150"></span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <p className="text-body-sm text-secondary">{v2Matched ? 'Driver: Sarah • Ford Explorer' : 'Finding nearby XL drivers...'}</p>
-                                            </div>
+                                            <p className="text-body-sm text-secondary">{v2Matched ? 'Driver: Sarah • Ford Explorer' : 'Finding nearby drivers...'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -577,197 +498,173 @@
             );
         };
 
-        // Screen 5: Final Confirmation
-        const ConfirmationScreen = () => {
+        const ConfirmedPage = () => {
             const navigate = useNavigate();
             return (
                 <div className="bg-background min-h-screen">
                     <TopAppBar title="Trip Confirmed" />
-                    <main className="pt-24 pb-32 px-margin-mobile max-w-2xl mx-auto">
-                        <section className="mb-xl text-center">
-                            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-md animate-bounce">
-                                <span className="material-symbols-outlined text-on-primary text-3xl" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                    <main className="pt-14 pb-40">
+                        <section className="bg-surface-container-lowest px-margin-mobile py-sm flex items-center justify-between border-b border-outline-variant/30 shadow-sm">
+                            <div className="flex items-center gap-sm">
+                                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center animate-pulse"><span className="material-symbols-outlined text-white text-lg">check_circle</span></div>
+                                <div><h2 className="font-label-md font-bold text-primary">Scheduled</h2><p className="text-[11px] text-on-secondary-container">Your group ride is active</p></div>
                             </div>
-                            <h2 className="font-headline-lg-mobile text-primary mb-xs">Trip Confirmed</h2>
-                            <p className="text-on-secondary-container font-body-md">Your group ride is scheduled and synced.</p>
+                            <button onClick={() => navigate('/trip-room')} className="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold text-xs uppercase">Live Tracking</button>
                         </section>
-
-                        <div className="relative w-full h-48 rounded-xl overflow-hidden mb-xl shadow-md border border-outline-variant">
-                            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDbVZp9nFc99SGOn1eveiPbhenub3FUdwzK2o34UQsUmCV9iSJO_PsSG_d_nw6oeCpAWT_K1ByCjgNeLsHFFiFM9MW4hlirhIk9F1G-3dyC1MrgNqQFu5iA25txDN2zne-oL76RnrdGzRaoX586wu49o2uryFu1bT4oa7iIhJXxBzhgyx3XTt_3g9CapDE_WMh7uGMHeiAV_PI2omNNfpG_rsENt3zRTjdwayAGSIceDFiC7UrTAsXo')" }}></div>
+                        <div className="relative w-full h-[300px] bg-surface-dim/20">
+                            <div className="w-full h-full bg-cover bg-center" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u')"}}></div>
                         </div>
-
-                        <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm mb-lg">
-                            <h3 className="font-label-md text-on-surface-variant uppercase tracking-wider mb-md">Timeline & Pickup</h3>
-                            <div className="space-y-lg">
-                                <div className="relative flex gap-md step-line">
-                                    <img className="relative z-10 w-8 h-8 rounded-full border-2 border-primary object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEWHLgS-vnL_82AjXNF9_mu0RbrzeWxO7MluJtWfw5q_9defRCMfgemcB_FB4fOxzsYWWSbO4Tq4wz1X-ik0YSgcYRdILI9JmCxTYrfAWRmRZnivhFZf-l7-ieBUEzHebARrcNJ9ncsUqwsHtk9SHktD9kAncVf4WeCUAXffSbxKLFpGYTnH1ku_U796ysVG9Iyj3Y4koW4qIj2KJ14TW2Xg4ZRkjoADr0jtEC4h9PlBPJKJ7DdOtQ" alt="Sarah" />
-                                    <div className="flex-grow pt-1"><p className="font-headline-md leading-none mb-1">Sarah</p><p className="font-body-sm text-on-secondary-container flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">schedule</span> Pickup at 3:02 PM</p></div>
-                                </div>
-                                <div className="relative flex gap-md step-line-last">
-                                    <div className="relative z-10 flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span className="material-symbols-outlined text-on-primary text-lg" style={{fontVariationSettings: "'FILL' 1"}}>location_on</span></div>
-                                    <div className="flex-grow pt-1"><p className="font-headline-md leading-none mb-1">The Grand Theatre</p><p className="font-body-sm text-primary font-bold flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">sports_score</span> Arrival at 3:42 PM</p></div>
+                        <div className="px-margin-mobile mt-lg space-y-gutter">
+                            <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant relative">
+                                <h3 className="font-label-md uppercase tracking-wider mb-md opacity-60">Timeline</h3>
+                                <div className="space-y-lg relative">
+                                    {[1,2,3].map(i => (
+                                        <div key={i} className="relative flex gap-md step-line">
+                                            <div className="relative z-10 w-8 h-8 rounded-full border-2 border-primary bg-white flex items-center justify-center overflow-hidden">
+                                                <div className="w-full h-full bg-surface-container flex items-center justify-center font-bold">{i === 1 ? 'S' : i === 2 ? 'M' : 'J'}</div>
+                                            </div>
+                                            <div className="flex-grow pt-1">
+                                                <div className="flex justify-between items-baseline"><p className="font-label-md font-bold">Rider {i}</p><p className="font-label-sm opacity-60">2:{40 + i*10} PM</p></div>
+                                                <p className="font-body-sm text-on-secondary-container">Pickup: Market St</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="relative flex gap-md">
+                                        <div className="relative z-10 w-8 h-8 rounded-lg bg-primary flex items-center justify-center"><span className="material-symbols-outlined text-white text-sm">location_on</span></div>
+                                        <div className="flex-grow pt-1">
+                                            <div className="flex justify-between items-baseline"><p className="font-label-md font-bold">Destination</p><p className="font-label-sm font-bold text-primary">3:42 PM</p></div>
+                                            <p className="font-body-sm text-primary font-medium">Arrival at The Grand Theatre</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <button onClick={() => navigate('/room')} className="w-full bg-primary text-on-primary py-4 rounded-lg font-bold shadow-xl active:scale-95 transition-all">Go to Trip Room</button>
                     </main>
+                    <footer className="fixed bottom-0 left-0 w-full p-md bg-surface border-t border-outline-variant z-40 safe-bottom">
+                        <button onClick={() => navigate('/trip-room')} className="w-full h-12 bg-primary text-white font-bold rounded-lg mb-2">Open Trip Room</button>
+                    </footer>
                 </div>
             );
         };
 
-        // Screen 6: Trip Operations / Room
-        const RoomScreen = () => {
+        const TripRoomPage = () => {
             const navigate = useNavigate();
             return (
-                <div className="bg-background min-h-screen">
-                    <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile py-sm bg-surface/80 backdrop-blur-md h-16">
-                        <div className="flex items-center gap-md">
-                            <button onClick={() => navigate(-1)} className="p-sm rounded-full hover:bg-surface-container-high transition-colors"><span className="material-symbols-outlined text-primary">arrow_back</span></button>
-                            <h1 className="font-headline-md font-bold text-primary">Group Room</h1>
-                        </div>
-                        <span className="font-label-md text-secondary">ID: #GT-8821</span>
-                    </header>
-                    <main className="pt-16 pb-24 max-w-4xl mx-auto">
-                        <div className="relative h-64 w-full overflow-hidden">
-                            <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRPAFzzqHbFLwN7Bk2J2o79ymle6tZeJQqi4u7PWGQwmYl6OKofyfRrLAVqC_gIW2jAe6gJ6jXeZVnFT3gzwI2Euu0EC4-imIeOHITuxHelFcZcIlvr5mmb7dVCXvjo0SevSJ2H1J5Li-nhqbhxJTlzTnsLohSLjqh8jEgcxGdfoGh-zLK_RA_XWV3CzqwmLvypRK4_H0DaF_2PohxA0VsloS2gyoURc8VMb6a3g0bTfE_EZ8Y4_Pa')" }}></div>
+                <div className="bg-background min-h-screen selection:bg-secondary-container">
+                    <TopAppBar title="Trip Room" statusLabel="#GT-8821" />
+                    <main className="pt-16 pb-20 max-w-4xl mx-auto">
+                        <section className="relative h-72 w-full overflow-hidden">
+                            <div className="w-full h-full bg-cover bg-center grayscale brightness-50" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRPAFzzqHbFLwN7Bk2J2o79ymle6tZeJQqi4u7PWGQwmYl6OKofyfRrLAVqC_gIW2jAe6gJ6jXeZVnFT3gzwI2Euu0EC4-imIeOHITuxHelFcZcIlvr5mmb7dVCXvjo0SevSJ2H1J5Li-nhqbhxJTlzTnsLohSLjqh8jEgcxGdfoGh-zLK_RA_XWV3CzqwmLvypRK4_H0DaF_2PohxA0VsloS2gyoURc8VMb6a3g0bTfE_EZ8Y4_Pa')"}}></div>
                             <div className="absolute bottom-md left-md right-md bg-white/95 backdrop-blur p-md rounded-xl flex items-center justify-between shadow-lg">
                                 <div className="flex items-center gap-md">
                                     <div className="relative">
-                                        <img className="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmjjIgVHsx6pww5ZvBpZRPy_eGpwVWrVvZTN1LavhmqYO84Cu58jGzny_b99M24yFbGtWwK3P9AZKqaTdbW0QtPnnxzx9DigZMovySErtxTkoQu4DdrBttQkHd3c091xmz_-FdZ2uALg3Iy5KFS0iwSB9pQ23M6v0yZnqev9STQx9TKf8Da-NhWYAxfmpuHDuey_uQiv3aBslExC_lmW8PEAE3mZvJaovvnLhpaUbpaJf0edqWvjNL" alt="Driver" />
-                                        <div className="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full border-2 border-white"><span className="material-symbols-outlined text-[10px]" style={{fontVariationSettings: "'FILL' 1"}}>verified</span></div>
+                                        <div className="w-12 h-12 rounded-full bg-slate-200 bg-cover" style={{backgroundImage: "url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e')"}}></div>
+                                        <div className="absolute -bottom-1 -right-1 bg-primary text-white p-0.5 rounded-full border-2 border-white"><span className="material-symbols-outlined text-[10px]">verified</span></div>
                                     </div>
-                                    <div><h3 className="font-headline-md text-primary">Marcus W.</h3><p className="font-body-sm text-secondary">Toyota Prius • KLU 992</p></div>
+                                    <div><h3 className="font-headline-md text-sm font-bold">Marcus W.</h3><p className="font-body-sm text-xs opacity-60">Toyota Prius • KLU 992</p></div>
                                 </div>
-                                <div className="text-right"><p className="font-label-sm text-secondary">ETA</p><p className="font-headline-md text-primary">4 mins</p></div>
-                            </div>
-                        </div>
-
-                        <div className="px-margin-mobile mt-lg">
-                            <h2 className="font-headline-md mb-md">Live Timeline</h2>
-                            <div className="space-y-0 relative trip-line ml-4">
-                                <div className="relative pl-xl pb-lg flex items-start gap-md">
-                                    <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center z-10"><span className="material-symbols-outlined text-white text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>check</span></div>
-                                    <div className="flex-1"><div className="flex justify-between items-center"><span className="font-label-md text-primary">Pickup: Alex Johnson</span><span className="font-label-sm text-secondary">08:12 AM</span></div></div>
-                                </div>
-                                <div className="relative pl-xl pb-lg flex items-start gap-md">
-                                    <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center z-10 active-glow"><span className="material-symbols-outlined text-white text-[20px]">directions_car</span></div>
-                                    <div className="flex-1"><div className="flex justify-between items-center"><span className="font-label-md font-bold text-primary">Pickup: Sarah Chen</span><span className="font-label-sm text-primary font-bold">In Progress</span></div></div>
+                                <div className="text-right">
+                                    <p className="font-label-sm text-[10px] uppercase opacity-60">ETA</p>
+                                    <p className="font-headline-md text-primary">4 mins</p>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="px-margin-mobile mt-xl">
-                            <button onClick={() => navigate('/complete')} className="w-full bg-surface-container-high py-3 rounded-lg text-primary font-bold hover:bg-surface-container-highest transition-colors">Simulation: Complete Trip</button>
-                        </div>
-                    </main>
-                    <div className="fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant p-md z-50">
-                        <div className="max-w-4xl mx-auto flex items-center gap-md">
-                            <input className="flex-1 bg-surface-container-low border-none rounded-full px-md py-sm font-body-sm focus:ring-2 focus:ring-primary" placeholder="Message group..." type="text" />
-                            <button className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center active:scale-95 transition-transform"><span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>send</span></button>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // Screen 7: Journey Completion
-        const CompleteScreen = () => {
-            const navigate = useNavigate();
-            const canvasRef = useRef(null);
-
-            useEffect(() => {
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                const pieces = Array.from({ length: 50 }).map(() => ({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * -canvas.height,
-                    size: Math.random() * 8 + 4,
-                    speed: Math.random() * 2 + 1,
-                    rotation: Math.random() * 2 * Math.PI,
-                    rotationSpeed: Math.random() * 0.1,
-                    color: ['#000000', '#5d5f5f', '#848484'][Math.floor(Math.random() * 3)]
-                }));
-
-                function draw() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    pieces.forEach(p => {
-                        p.y += p.speed;
-                        p.rotation += p.rotationSpeed;
-                        if (p.y > canvas.height) p.y = -20;
-                        ctx.save();
-                        ctx.translate(p.x, p.y);
-                        ctx.rotate(p.rotation);
-                        ctx.fillStyle = p.color;
-                        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-                        ctx.restore();
-                    });
-                    requestAnimationFrame(draw);
-                }
-                draw();
-            }, []);
-
-            return (
-                <div className="bg-background min-h-screen relative flex flex-col">
-                    <canvas ref={canvasRef} className="confetti-canvas"></canvas>
-                    <TopAppBar />
-                    <main className="flex-1 mt-16 pb-24 px-margin-mobile">
-                        <section className="py-xl flex flex-col items-center text-center relative">
-                            <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mb-md shadow-md animate-float">
-                                <span className="material-symbols-outlined text-white text-5xl" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
-                            </div>
-                            <h2 className="font-headline-lg-mobile text-primary mb-xs">Everyone arrived together.</h2>
-                            <p className="font-body-md text-on-surface-variant max-w-xs mx-auto">One booking. One coordinated journey. Seamlessly completed.</p>
                         </section>
 
-                        <div className="grid grid-cols-2 gap-md mb-xl">
-                            <div className="col-span-2 p-md bg-tertiary-container rounded-xl flex justify-between items-center relative overflow-hidden">
-                                <div className="z-10 text-white">
-                                    <span className="font-label-sm uppercase tracking-wider opacity-80">Efficiency Boost</span>
-                                    <h3 className="font-display-lg">$42.50 Saved</h3>
-                                    <p className="font-body-sm opacity-90">Compared to individual booking</p>
+                        <section className="px-margin-mobile mt-lg">
+                            <div className="grid grid-cols-2 gap-md">
+                                <div className="bg-surface-container rounded-xl p-md">
+                                    <p className="font-label-sm text-xs flex items-center gap-xs opacity-60"><span className="material-symbols-outlined text-[16px]">location_on</span>Current Pickup</p>
+                                    <p className="font-headline-md font-bold mt-xs">John</p>
+                                    <p className="font-body-sm text-xs truncate">722 Market St, SF</p>
                                 </div>
-                                <span className="material-symbols-outlined text-[120px] text-white absolute -right-4 -bottom-4 opacity-20">savings</span>
+                                <div className="bg-surface-container rounded-xl p-md opacity-40">
+                                    <p className="font-label-sm text-xs flex items-center gap-xs opacity-60"><span className="material-symbols-outlined text-[16px]">fast_forward</span>Next Pickup</p>
+                                    <p className="font-headline-md font-bold mt-xs">James</p>
+                                    <p className="font-body-sm text-xs truncate">110 Pine St, SF</p>
+                                </div>
                             </div>
-                            <div className="p-md bg-surface-container rounded-xl flex flex-col gap-xs">
-                                <span className="material-symbols-outlined text-primary">group</span>
-                                <span className="font-headline-md text-primary">8 Riders</span>
-                            </div>
-                            <div className="p-md bg-surface-container rounded-xl flex flex-col gap-xs">
-                                <span className="material-symbols-outlined text-primary">directions_car</span>
-                                <span className="font-headline-md text-primary">2 Vehicles</span>
-                            </div>
-                        </div>
+                        </section>
 
-                        <div className="p-md bg-surface-container-highest/50 rounded-xl mb-xl border border-dashed border-outline flex gap-md items-start">
-                            <span className="material-symbols-outlined text-on-surface-variant">archive</span>
-                            <p className="font-body-sm text-on-surface-variant">Trip archived. View in History. Payments processing.</p>
-                        </div>
+                        <section className="mt-xl px-margin-mobile">
+                            <h2 className="font-headline-md text-headline-md mb-md">Trip Activity</h2>
+                            <div className="bg-surface-container-low rounded-xl p-md flex flex-col gap-md min-h-[300px]">
+                                <div className="flex flex-col gap-xs max-w-[80%]">
+                                    <div className="bg-surface-container-highest p-md rounded-tr-xl rounded-bl-xl rounded-br-xl">
+                                        <p className="font-body-sm text-body-sm">Hey Marcus, we have one extra suitcase. Hope that's okay!</p>
+                                    </div>
+                                    <span className="font-label-sm text-[10px] opacity-60">Alex • 08:15 AM</span>
+                                </div>
+                                <div className="flex flex-col items-end gap-xs self-end max-w-[80%]">
+                                    <div className="bg-primary text-on-primary p-md rounded-tl-xl rounded-bl-xl rounded-br-xl">
+                                        <p className="font-body-sm text-body-sm">No problem at all. Loading Sarah's bags now.</p>
+                                    </div>
+                                    <span className="font-label-sm text-[10px] opacity-60">Marcus (Driver) • 08:24 AM</span>
+                                </div>
+                                <div className="mt-auto">
+                                    <button onClick={() => navigate('/complete')} className="w-full bg-secondary-container text-primary font-bold py-3 rounded-xl border border-outline-variant">Simulate Arrival</button>
+                                </div>
+                            </div>
+                        </section>
                     </main>
-                    <div className="fixed bottom-0 left-0 w-full flex flex-col bg-surface border-t border-outline-variant z-50">
-                        <div className="p-md">
-                            <button onClick={() => navigate('/')} className="w-full bg-primary text-white py-4 rounded-lg font-bold hover:opacity-90 active:scale-95 transition-all">Done</button>
-                        </div>
-                        <BottomNav active="account" />
-                    </div>
                 </div>
             );
         };
 
-        // --- App Entry ---
+        const CompletionPage = () => {
+            const navigate = useNavigate();
+            return (
+                <div className="bg-background min-h-screen flex flex-col">
+                    <TopAppBar title="Trip Completed" />
+                    <main className="flex-1 mt-16 pb-24 px-margin-mobile text-center">
+                        <section className="py-xl flex flex-col items-center">
+                            <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mb-md shadow-md">
+                                <span className="material-symbols-outlined text-white text-5xl">check_circle</span>
+                            </div>
+                            <h2 className="font-headline-lg text-primary mb-xs">Everyone arrived together.</h2>
+                            <p className="font-body-md opacity-60 max-w-xs mx-auto">One booking. One coordinated journey. Completed.</p>
+                        </section>
+
+                        <section className="grid grid-cols-2 gap-md mb-xl text-left">
+                            <div className="col-span-2 p-md bg-tertiary-container rounded-xl text-white relative overflow-hidden">
+                                <span className="font-label-sm uppercase tracking-wider opacity-60">Efficiency Boost</span>
+                                <h3 className="font-display-lg text-2xl font-bold">$42.50 Saved</h3>
+                                <p className="font-body-sm opacity-80">Compared to individual booking</p>
+                            </div>
+                            <div className="p-md bg-surface-container rounded-xl">
+                                <span className="material-symbols-outlined text-primary">group</span>
+                                <p className="font-headline-md font-bold">7 Riders</p>
+                                <p className="text-xs opacity-60">Full crew arrived</p>
+                            </div>
+                            <div className="p-md bg-surface-container rounded-xl">
+                                <span className="material-symbols-outlined text-primary">directions_car</span>
+                                <p className="font-headline-md font-bold">2 Vehicles</p>
+                                <p className="text-xs opacity-60">Coordinated fleet</p>
+                            </div>
+                        </section>
+
+                        <button onClick={() => navigate('/')} className="w-full bg-primary text-white py-4 rounded-lg font-bold">Return Home</button>
+                    </main>
+                </div>
+            );
+        };
+
+        // --- App Component ---
 
         const App = () => {
             return (
                 <MemoryRouter>
                     <Routes>
-                        <Route path="/" element={<HomeScreen />} />
-                        <Route path="/assemble" element={<AssembleScreen />} />
-                        <Route path="/plan" element={<PlanScreen />} />
-                        <Route path="/matching" element={<MatchingScreen />} />
-                        <Route path="/confirmation" element={<ConfirmationScreen />} />
-                        <Route path="/room" element={<RoomScreen />} />
-                        <Route path="/complete" element={<CompleteScreen />} />
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/join-lobby" element={<JoinLobbyPage />} />
+                        <Route path="/plan-overview" element={<PlanOverviewPage />} />
+                        <Route path="/matching" element={<MatchingPage />} />
+                        <Route path="/confirmed" element={<ConfirmedPage />} />
+                        <Route path="/trip-room" element={<TripRoomPage />} />
+                        <Route path="/complete" element={<CompletionPage />} />
+                        {/* Fallback routes for Nav */}
+                        <Route path="/activity" element={<ConfirmedPage />} />
+                        <Route path="/account" element={<CompletionPage />} />
+                        <Route path="/safety" element={<HomePage />} />
                     </Routes>
                 </MemoryRouter>
             );
