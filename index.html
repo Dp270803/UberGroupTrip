@@ -708,7 +708,7 @@ const ConfirmedPage = () => {
                 </div>
             </main>
             <div className="fixed bottom-0 left-0 w-full z-40 bg-white/95 backdrop-blur border-t border-uber-gray-100 p-4 space-y-2">
-                <Btn onClick={() => { addToast('Your trip will continue in the background.', 'success'); nav('/'); }}>Done</Btn>
+                <Btn onClick={() => nav('/trip-room')} icon="directions_car">Go to Trip Room</Btn>
                 <Btn variant="secondary" icon="share" onClick={() => addToast('Live status link copied!', 'success')}>Share Live Status</Btn>
             </div>
         </div>
