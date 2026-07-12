@@ -3,675 +3,898 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>GroupTrip - Seamless Coordinated Rides</title>
-    
-    <!-- Libraries -->
+    <title>GroupTrip — Uber Coordinated Rides</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
-    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
     <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
-    <!-- Fonts & Icons -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-
-    <script id="tailwind-config">
+    <script>
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "surface-dim": "#dadada",
-                        "tertiary-container": "#001947",
-                        "secondary-container": "#dfe0e0",
-                        "surface": "#f9f9f9",
-                        "on-primary-container": "#848484",
-                        "secondary-fixed-dim": "#c6c6c7",
-                        "on-primary-fixed": "#1b1b1b",
-                        "primary-fixed-dim": "#c6c6c6",
-                        "on-surface-variant": "#4c4546",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-bright": "#f9f9f9",
-                        "on-secondary-fixed-variant": "#454747",
-                        "on-surface": "#1b1b1b",
-                        "surface-container-high": "#e8e8e8",
-                        "primary": "#000000",
-                        "on-tertiary-fixed-variant": "#00419f",
-                        "on-error-container": "#93000a",
-                        "outline-variant": "#cfc4c5",
-                        "surface-tint": "#5e5e5e",
-                        "background": "#f9f9f9",
-                        "secondary-fixed": "#e2e2e2",
-                        "primary-fixed": "#e2e2e2",
-                        "primary-container": "#1b1b1b",
-                        "surface-container-low": "#f3f3f3",
-                        "on-tertiary-fixed": "#001947",
-                        "on-error": "#ffffff",
-                        "outline": "#7e7576",
-                        "error-container": "#ffdad6",
-                        "surface-container-highest": "#e2e2e2",
-                        "error": "#ba1a1a",
-                        "tertiary-fixed-dim": "#b1c5ff",
-                        "on-background": "#1b1b1b",
-                        "inverse-primary": "#c6c6c6",
-                        "on-secondary-container": "#616363",
-                        "on-tertiary-container": "#3e7dff",
-                        "on-primary-fixed-variant": "#474747",
-                        "inverse-surface": "#303030",
-                        "inverse-on-surface": "#f1f1f1",
-                        "tertiary-fixed": "#dae2ff",
-                        "on-secondary": "#ffffff",
-                        "on-tertiary": "#ffffff",
-                        "on-primary": "#ffffff",
-                        "tertiary": "#000000",
-                        "secondary": "#5d5f5f",
-                        "surface-container": "#eeeeee",
-                        "on-secondary-fixed": "#1a1c1c",
-                        "surface-variant": "#e2e2e2"
+                        uber: { black: '#000000', white: '#FFFFFF', gray: { 50: '#F6F6F6', 100: '#EEEEEE', 200: '#E2E2E2', 300: '#CBCBCB', 400: '#AFAFAF', 500: '#757575', 600: '#545454', 700: '#333333', 800: '#1B1B1B' }, green: '#276EF1', success: '#05A357', warning: '#FFC043', danger: '#E11900' }
                     },
-                    spacing: {
-                        "lg": "24px",
-                        "xl": "32px",
-                        "unit": "4px",
-                        "sm": "8px",
-                        "gutter": "12px",
-                        "md": "16px",
-                        "xs": "4px",
-                        "margin-mobile": "16px",
-                        "margin-desktop": "40px"
-                    },
-                    fontFamily: {
-                        "display-lg": ["Plus Jakarta Sans"],
-                        "headline-md": ["Plus Jakarta Sans"],
-                        "headline-lg": ["Plus Jakarta Sans"],
-                        "body-md": ["Inter"],
-                        "label-sm": ["Inter"],
-                        "label-md": ["Inter"]
-                    }
+                    fontFamily: { display: ['Plus Jakarta Sans','sans-serif'], body: ['Inter','sans-serif'] }
                 }
             }
         }
     </script>
-
     <style>
-        @keyframes pop-in {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-pop-in { animation: pop-in 0.4s ease-out forwards; }
-        
-        @keyframes pulse-ring {
-            0% { transform: scale(0.33); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-        .search-ripple {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 2px solid #000;
-            border-radius: 50%;
-            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-
-        .custom-shadow-md { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-        
-        .trip-line::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 24px;
-            bottom: 0;
-            width: 2px;
-            background-color: #000000;
-        }
-        
-        .step-line::after {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 32px;
-            height: calc(100% - 16px);
-            width: 2px;
-            background-color: #000;
-            z-index: 0;
-        }
+        * { -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: #F6F6F6; overscroll-behavior: none; }
+        @keyframes pop { 0%{transform:scale(.7);opacity:0} 100%{transform:scale(1);opacity:1} }
+        @keyframes slideUp { 0%{transform:translateY(20px);opacity:0} 100%{transform:translateY(0);opacity:1} }
+        @keyframes fadeIn { 0%{opacity:0} 100%{opacity:1} }
+        @keyframes pulse-ring { 0%{transform:scale(.33);opacity:0} 50%{opacity:.4} 100%{transform:scale(1.6);opacity:0} }
+        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        @keyframes progress { 0%{width:0} 100%{width:100%} }
+        @keyframes dotPulse { 0%,80%,100%{opacity:.3} 40%{opacity:1} }
+        .anim-pop { animation: pop .4s ease-out both; }
+        .anim-slide { animation: slideUp .5s ease-out both; }
+        .anim-fade { animation: fadeIn .6s ease-out both; }
+        .ripple { position:absolute;width:80px;height:80px;border:2px solid #000;border-radius:50%;animation:pulse-ring 2s cubic-bezier(.215,.61,.355,1) infinite; }
+        .shimmer-bar { background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        .dot-pulse span { animation: dotPulse 1.4s infinite both; }
+        .dot-pulse span:nth-child(2) { animation-delay: .2s; }
+        .dot-pulse span:nth-child(3) { animation-delay: .4s; }
+        .shadow-card { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+        .shadow-heavy { box-shadow: 0 8px 30px rgba(0,0,0,.12); }
+        .btn-press:active { transform: scale(.97); }
+        input:focus { outline: none; }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
+</head>
 <body>
-    <div id="root"></div>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback, createContext, useContext } = React;
+const { createRoot } = ReactDOM;
+const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { createRoot } = ReactDOM;
-        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+/* ═══════════════════════════════════════════
+   GLOBAL STATE CONTEXT
+   ═══════════════════════════════════════════ */
+const TripContext = createContext();
 
-        // --- Shared Components ---
+const RIDERS = [
+    { id:1, name:'Alex', last:'Johnson', me:true, img:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop', pickup:'224 Battery St', status:'confirmed', vehicle:1 },
+    { id:2, name:'Sarah', last:'Miller', img:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop', pickup:'450 Post St', status:'confirmed', vehicle:1 },
+    { id:3, name:'James', last:'Chen', img:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop', pickup:'1101 Van Ness Ave', status:'confirmed', vehicle:1 },
+    { id:4, name:'Jordan', last:'Smith', img:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop', pickup:'722 Market St', status:'confirmed', vehicle:2 },
+    { id:5, name:'Sam', last:'Park', img:'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop', pickup:'110 Pine St', status:'confirmed', vehicle:2 },
+    { id:6, name:'Mia', last:'Davis', img:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop', pickup:'88 Kearny St', status:'confirmed', vehicle:2 },
+    { id:7, name:'Harvey', last:'Wong', img:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop', pickup:'55 2nd St', status:'confirmed', vehicle:2 },
+];
 
-        const TopAppBar = ({ title, showBack = true, statusLabel }) => {
-            const navigate = useNavigate();
-            return (
-                <header className="fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-md flex justify-between items-center px-margin-mobile py-sm border-b border-outline-variant/10">
-                    <div className="flex items-center gap-md">
-                        {showBack && (
-                            <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-container-high transition-colors rounded-full text-primary active:opacity-70">
-                                <span className="material-symbols-outlined">arrow_back</span>
-                            </button>
-                        )}
-                        <h1 className="font-headline-md text-headline-md font-bold text-primary">{title}</h1>
+const DESTINATION = { name: 'Chase Center', address: '1 Warriors Way, San Francisco', eta: '8:42 PM' };
+const TRIP_COST = 42.50;
+const SAFETY_PIN = '4921';
+
+function TripProvider({ children }) {
+    const [riders, setRiders] = useState(RIDERS.slice(0, 1));
+    const [tripState, setTripState] = useState('idle'); // idle, forming, planning, recommending, matching, confirmed, live, completing, complete
+    const [v1Status, setV1Status] = useState('idle');
+    const [v2Status, setV2Status] = useState('idle');
+    const [pickupIndex, setPickupIndex] = useState(-1);
+    const [toasts, setToasts] = useState([]);
+    const [modals, setModals] = useState([]);
+
+    const addToast = useCallback((msg, type='info') => {
+        const id = Date.now();
+        setToasts(t => [...t, { id, msg, type }]);
+        setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3500);
+    }, []);
+
+    const showModal = useCallback((modal) => setModals(m => [...m, { ...modal, id: Date.now() }]), []);
+    const dismissModal = useCallback((id) => setModals(m => m.filter(x => x.id !== id)), []);
+
+    return (
+        <TripContext.Provider value={{ riders, setRiders, tripState, setTripState, v1Status, setV1Status, v2Status, setV2Status, pickupIndex, setPickupIndex, toasts, addToast, modals, showModal, dismissModal, RIDERS_ALL: RIDERS }}>
+            {children}
+        </TripContext.Provider>
+    );
+}
+
+/* ═══════════════════════════════════════════
+   SHARED COMPONENTS
+   ═══════════════════════════════════════════ */
+const Icon = ({ name, fill, size=24, className='' }) => (
+    <span className={`material-symbols-outlined ${className}`} style={{ fontSize: size, fontVariationSettings: fill ? "'FILL' 1" : "'FILL' 0" }}>{name}</span>
+);
+
+const TopBar = ({ title, back=true, right, statusLabel, onBack }) => {
+    const nav = useNavigate();
+    return (
+        <header className="fixed top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-uber-gray-100 px-4 h-14 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+                {back && <button onClick={onBack || (() => nav(-1))} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-uber-gray-50 btn-press"><Icon name="arrow_back" size={20}/></button>}
+                <h1 className="font-display font-bold text-base text-uber-black">{title}</h1>
+            </div>
+            <div className="flex items-center gap-2">
+                {statusLabel && <span className="text-[11px] font-bold bg-uber-gray-100 px-2 py-0.5 rounded font-body uppercase tracking-wide">{statusLabel}</span>}
+                {right || <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-uber-gray-50"><Icon name="more_vert" size={20}/></button>}
+            </div>
+        </header>
+    );
+};
+
+const BottomNav = ({ active='home' }) => {
+    const items = [
+        { id:'home', icon:'home', label:'Home', path:'/' },
+        { id:'activity', icon:'history', label:'Activity', path:'/activity' },
+        { id:'account', icon:'person', label:'Account', path:'/account' },
+        { id:'safety', icon:'shield', label:'Safety', path:'/safety' },
+    ];
+    return (
+        <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-uber-gray-100 h-14 flex items-center justify-around z-50">
+            {items.map(it => (
+                <Link key={it.id} to={it.path} className={`flex flex-col items-center gap-0.5 ${active===it.id ? 'text-uber-black' : 'text-uber-gray-400'}`}>
+                    <Icon name={it.icon} fill={active===it.id} size={22}/>
+                    <span className="text-[10px] font-medium">{it.label}</span>
+                </Link>
+            ))}
+        </nav>
+    );
+};
+
+const Avatar = ({ src, name, size=40, badge, ring, className='' }) => (
+    <div className={`relative shrink-0 ${className}`} style={{ width: size, height: size }}>
+        <div className={`w-full h-full rounded-full bg-cover bg-center bg-uber-gray-100 ${ring ? 'ring-2 ring-uber-black ring-offset-1' : ''}`} style={{ backgroundImage: `url('${src}')` }} />
+        {badge && <div className="absolute -bottom-0.5 -right-0.5 bg-uber-black text-white text-[8px] font-bold px-1 py-px rounded-full leading-tight">{badge}</div>}
+    </div>
+);
+
+const Btn = ({ children, onClick, variant='primary', full=true, disabled=false, className='', icon }) => {
+    const base = 'font-display font-bold rounded-xl flex items-center justify-center gap-2 btn-press transition-all';
+    const sizes = 'h-12 px-6 text-sm';
+    const variants = {
+        primary: 'bg-uber-black text-white hover:bg-uber-gray-700',
+        secondary: 'bg-uber-gray-50 text-uber-black border border-uber-gray-200 hover:bg-uber-gray-100',
+        danger: 'bg-uber-danger text-white hover:opacity-90',
+        ghost: 'bg-transparent text-uber-black hover:bg-uber-gray-50',
+        success: 'bg-uber-success text-white hover:opacity-90',
+    };
+    return (
+        <button onClick={onClick} disabled={disabled} className={`${base} ${sizes} ${variants[variant]} ${full?'w-full':''} ${disabled?'opacity-40 pointer-events-none':''} ${className}`}>
+            {icon && <Icon name={icon} size={18}/>}
+            {children}
+        </button>
+    );
+};
+
+const Card = ({ children, className='', onClick }) => (
+    <div onClick={onClick} className={`bg-white rounded-xl border border-uber-gray-100 shadow-card ${onClick?'cursor-pointer hover:border-uber-gray-200 btn-press':''} ${className}`}>{children}</div>
+);
+
+const Toast = () => {
+    const { toasts } = useContext(TripContext);
+    return (
+        <div className="fixed top-16 left-4 right-4 z-[100] flex flex-col gap-2">
+            {toasts.map(t => (
+                <div key={t.id} className={`anim-slide px-4 py-3 rounded-xl shadow-heavy flex items-center gap-3 text-sm font-medium ${t.type==='success'?'bg-uber-success text-white':t.type==='error'?'bg-uber-danger text-white':t.type==='warning'?'bg-uber-warning text-uber-black':'bg-uber-black text-white'}`}>
+                    <Icon name={t.type==='success'?'check_circle':t.type==='error'?'error':t.type==='warning'?'warning':'info'} size={18} fill/>
+                    {t.msg}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const Modal = () => {
+    const { modals, dismissModal } = useContext(TripContext);
+    if (!modals.length) return null;
+    const m = modals[modals.length - 1];
+    return (
+        <div className="fixed inset-0 z-[90] flex items-end justify-center" onClick={() => dismissModal(m.id)}>
+            <div className="absolute inset-0 bg-black/40 anim-fade"/>
+            <div className="relative bg-white rounded-t-2xl w-full max-w-md p-6 pb-8 anim-slide" onClick={e => e.stopPropagation()}>
+                {m.icon && <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${m.iconBg||'bg-uber-gray-50'}`}><Icon name={m.icon} size={24} fill className={m.iconColor||''}/></div>}
+                <h3 className="font-display font-bold text-lg mb-1">{m.title}</h3>
+                <p className="text-sm text-uber-gray-500 mb-6">{m.body}</p>
+                <div className="flex flex-col gap-2">
+                    {m.actions?.map((a, i) => <Btn key={i} variant={a.variant||'primary'} onClick={() => { a.action?.(); dismissModal(m.id); }}>{a.label}</Btn>)}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const MapBg = ({ grayscale=true, opacity=60, className='' }) => (
+    <div className={`absolute inset-0 overflow-hidden ${className}`}>
+        <div className={`w-full h-full bg-cover bg-center ${grayscale?'grayscale':''}`} style={{ opacity: opacity/100, backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u')" }}/>
+    </div>
+);
+
+const StatCard = ({ icon, label, value, sub, accent, className='' }) => (
+    <div className={`p-4 rounded-xl ${accent ? 'bg-uber-black text-white' : 'bg-uber-gray-50'} ${className}`}>
+        <Icon name={icon} size={18} className={accent ? 'text-white/60' : 'text-uber-gray-400'}/>
+        <p className={`font-display font-bold text-lg mt-1 ${accent?'text-white':''}`}>{value}</p>
+        <p className={`text-xs mt-0.5 ${accent ? 'text-white/70' : 'text-uber-gray-500'}`}>{label}</p>
+        {sub && <p className={`text-[11px] mt-0.5 ${accent ? 'text-white/50' : 'text-uber-gray-400'}`}>{sub}</p>}
+    </div>
+);
+
+const TimelineItem = ({ avatar, name, address, time, status='upcoming', isLast=false }) => (
+    <div className="flex gap-3 relative">
+        {!isLast && <div className="absolute left-[15px] top-8 bottom-0 w-[2px] bg-uber-gray-200"/>}
+        <div className="relative z-10 shrink-0">
+            {avatar ? <Avatar src={avatar} size={32}/> :
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${status==='done'?'bg-uber-success':status==='current'?'bg-uber-black':'bg-uber-gray-100'}`}>
+                <Icon name={status==='done'?'check':status==='current'?'person':'schedule'} size={16} fill className={status==='done'||status==='current'?'text-white':'text-uber-gray-400'}/>
+            </div>}
+        </div>
+        <div className="flex-1 pb-4 min-w-0">
+            <div className="flex justify-between items-baseline">
+                <p className={`text-sm font-semibold truncate ${status==='done'?'text-uber-gray-400 line-through':''}`}>{name}</p>
+                <span className="text-[11px] text-uber-gray-400 shrink-0 ml-2">{time}</span>
+            </div>
+            <p className="text-xs text-uber-gray-500 truncate">{address}</p>
+            {status==='current' && <span className="inline-flex items-center gap-1 mt-1 text-[11px] font-bold text-uber-success"><Icon name="directions_car" size={12} fill/> Driver arriving</span>}
+        </div>
+    </div>
+);
+
+/* ═══════════════════════════════════════════
+   SCREEN 1 — HOME
+   ═══════════════════════════════════════════ */
+const HomePage = () => {
+    const nav = useNavigate();
+    const { setTripState, setRiders } = useContext(TripContext);
+    const startTrip = () => { setTripState('forming'); setRiders(RIDERS.slice(0,1)); nav('/formation'); };
+    return (
+        <div className="min-h-screen bg-uber-gray-50">
+            <TopBar title="Group Trip" back={false}/>
+            <main className="pt-14 pb-16 relative">
+                <MapBg opacity={50}/>
+                <div className="relative z-10 px-4 py-6 flex flex-col gap-4">
+                    <Card className="p-4">
+                        <div className="flex gap-3">
+                            <div className="flex flex-col items-center py-2 gap-1">
+                                <div className="w-2 h-2 rounded-full bg-uber-black"/>
+                                <div className="w-0.5 h-10 bg-uber-gray-200"/>
+                                <div className="w-2 h-2 bg-uber-black"/>
+                            </div>
+                            <div className="flex-1 flex flex-col gap-2">
+                                <div className="bg-uber-gray-50 h-10 rounded-lg px-3 flex items-center justify-between">
+                                    <span className="text-sm text-uber-gray-500">Current Location</span>
+                                    <Icon name="my_location" size={18} className="text-uber-gray-400"/>
+                                </div>
+                                <div className="bg-uber-gray-50 h-10 rounded-lg px-3 flex items-center justify-between border-b-2 border-uber-black">
+                                    <span className="text-sm">Chase Center</span>
+                                    <Icon name="close" size={16} className="text-uber-gray-400"/>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+
+                    <button onClick={startTrip} className="bg-uber-black text-white rounded-xl p-4 text-left shadow-heavy btn-press relative overflow-hidden group">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Icon name="groups" size={20}/>
+                                    <span className="font-display font-bold text-sm">Plan Together</span>
+                                </div>
+                                <p className="text-xs text-white/70">One booking for your group.</p>
+                            </div>
+                            <div className="bg-white text-uber-black px-4 py-2 rounded-lg font-display font-bold text-xs">Start</div>
+                        </div>
+                        <div className="flex items-center justify-between mt-3">
+                            <p className="text-[11px] text-white/50">We'll coordinate pickups automatically.</p>
+                            <div className="flex -space-x-1.5">
+                                {RIDERS.slice(0,3).map(r => <Avatar key={r.id} src={r.img} size={22} className="border-2 border-uber-black rounded-full"/>)}
+                                <div className="w-[22px] h-[22px] rounded-full bg-uber-gray-600 border-2 border-uber-black flex items-center justify-center text-[8px] font-bold text-white">+4</div>
+                            </div>
+                        </div>
+                    </button>
+
+                    <div className="mt-2">
+                        <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest px-1 mb-2">Recent Destinations</h3>
+                        <Card className="divide-y divide-uber-gray-100">
+                            {[{n:'Home',a:'245 Market Street',i:'home'},{n:'Office',a:'1550 Bryant St',i:'work'},{n:'Chase Center',a:'1 Warriors Way',i:'schedule'}].map((p,i) => (
+                                <button key={i} className="w-full px-4 py-3 flex items-center gap-3 hover:bg-uber-gray-50 text-left btn-press">
+                                    <div className="w-10 h-10 rounded-full bg-uber-gray-50 flex items-center justify-center"><Icon name={p.i} size={18} fill className="text-uber-gray-600"/></div>
+                                    <div className="flex-1 min-w-0"><p className="text-sm font-semibold truncate">{p.n}</p><p className="text-xs text-uber-gray-500 truncate">{p.a}, San Francisco</p></div>
+                                    <Icon name="chevron_right" size={18} className="text-uber-gray-300"/>
+                                </button>
+                            ))}
+                        </Card>
                     </div>
-                    <div className="flex items-center gap-xs">
-                        {statusLabel && (
-                            <span className="font-label-md text-label-md bg-secondary-container px-2 py-0.5 rounded text-primary">{statusLabel}</span>
-                        )}
-                        <button className="p-2 hover:bg-surface-container-high transition-colors rounded-full text-primary active:opacity-70">
-                            <span className="material-symbols-outlined">more_vert</span>
-                        </button>
+                </div>
+            </main>
+            <BottomNav active="home"/>
+        </div>
+    );
+};
+
+/* ═══════════════════════════════════════════
+   SCREEN 2 — GROUP FORMATION
+   ═══════════════════════════════════════════ */
+const FormationPage = () => {
+    const nav = useNavigate();
+    const { riders, setRiders, addToast, showModal, RIDERS_ALL } = useContext(TripContext);
+    const [progress, setProgress] = useState(10);
+    const [statusLog, setStatusLog] = useState([]);
+    const joinIndex = useRef(1);
+
+    useEffect(() => {
+        const logs = ['Finding nearby pickups...', '', 'Recalculating route...', '', 'Optimizing vehicle selection...', '', 'Finalizing plan...'];
+        let idx = 0;
+        const interval = setInterval(() => {
+            if (joinIndex.current < RIDERS_ALL.length) {
+                const newRider = RIDERS_ALL[joinIndex.current];
+                setRiders(prev => [...prev, newRider]);
+                setStatusLog(prev => [...prev, { text: `${newRider.name} joined`, type: 'join' }]);
+                joinIndex.current++;
+                setProgress(p => Math.min(95, p + 12));
+                setTimeout(() => {
+                    if (logs[idx]) { setStatusLog(prev => [...prev, { text: logs[idx], type: 'system' }]); idx++; }
+                    setProgress(p => Math.min(95, p + 5));
+                }, 600);
+            } else {
+                clearInterval(interval);
+                setProgress(100);
+                setStatusLog(prev => [...prev, { text: 'Route optimized — ready to review', type: 'done' }]);
+            }
+        }, 1200);
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleRemoveRider = (rider) => {
+        showModal({
+            icon: 'person_remove', iconBg: 'bg-red-50', iconColor: 'text-uber-danger',
+            title: `Remove ${rider.name}?`,
+            body: `${rider.name} will be removed from the group and notified. The route will be recalculated.`,
+            actions: [
+                { label: 'Remove', variant: 'danger', action: () => { setRiders(prev => prev.filter(r => r.id !== rider.id)); addToast(`${rider.name} removed from trip`, 'warning'); }},
+                { label: 'Cancel', variant: 'secondary' }
+            ]
+        });
+    };
+
+    return (
+        <div className="min-h-screen bg-uber-gray-50">
+            <TopBar title="Group Trip" statusLabel="LIVE"/>
+            <main className="pt-14 pb-16 relative min-h-screen flex flex-col">
+                <MapBg opacity={35}/>
+                <div className="flex-1"/>
+                <div className="relative z-10 px-4 pb-6 flex flex-col gap-3">
+                    {/* Status Feed */}
+                    <Card className="p-4 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-uber-gray-100">
+                            <div className="h-full bg-uber-black transition-all duration-700 ease-out" style={{width:`${progress}%`}}/>
+                        </div>
+                        <div className="pt-2 flex flex-col gap-1.5 max-h-32 overflow-y-auto">
+                            {statusLog.slice(-5).map((s, i) => (
+                                <div key={i} className={`flex items-center gap-2 text-xs anim-fade ${s.type==='done'?'text-uber-success font-bold':s.type==='join'?'text-uber-black':'text-uber-gray-400'}`} style={{animationDelay:`${i*.05}s`}}>
+                                    <Icon name={s.type==='done'?'check_circle':s.type==='join'?'person_add':'sync'} size={14} fill={s.type==='done'}/>
+                                    {s.text}
+                                </div>
+                            ))}
+                            {progress < 100 && <div className="flex items-center gap-2 text-xs text-uber-black font-semibold">
+                                <Icon name="sync" size={14} className="animate-spin"/>
+                                Optimizing route for {riders.length} people...
+                            </div>}
+                        </div>
+                    </Card>
+
+                    {/* Participants */}
+                    <Card className="p-4">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="font-display font-bold text-base">Participants</h2>
+                            <span className="text-xs font-bold bg-uber-gray-100 px-2 py-1 rounded-full">{riders.length} Joined</span>
+                        </div>
+                        <div className="flex flex-wrap gap-4">
+                            {riders.map((r, i) => (
+                                <button key={r.id} onClick={() => !r.me && handleRemoveRider(r)} className="flex flex-col items-center gap-1 anim-pop" style={{animationDelay:`${i*.08}s`}}>
+                                    <Avatar src={r.img} size={56} badge={r.me?'ME':null} ring={r.me}/>
+                                    <span className="text-xs font-medium">{r.name}</span>
+                                </button>
+                            ))}
+                            {riders.length < 12 && (
+                                <div className="flex flex-col items-center gap-1">
+                                    <div className="w-14 h-14 rounded-full border-2 border-dashed border-uber-gray-300 flex items-center justify-center"><Icon name="add" size={20} className="text-uber-gray-400"/></div>
+                                    <span className="text-xs text-uber-gray-400">Invite</span>
+                                </div>
+                            )}
+                        </div>
+                        <div className="border-t border-uber-gray-100 mt-4 pt-4 flex gap-2">
+                            <Btn icon="share" variant="primary" onClick={() => addToast('Invite link copied!', 'success')}>Share Invite Link</Btn>
+                        </div>
+                    </Card>
+                    <Btn onClick={() => nav('/plan')} disabled={riders.length < 2 || progress < 100}>
+                        {progress < 100 ? 'Optimizing...' : 'View Recommended Plan'}
+                    </Btn>
+                </div>
+            </main>
+            <BottomNav active="activity"/>
+        </div>
+    );
+};
+
+/* ═══════════════════════════════════════════
+   SCREEN 3 — RECOMMENDED PLAN
+   ═══════════════════════════════════════════ */
+const PlanPage = () => {
+    const nav = useNavigate();
+    const { riders } = useContext(TripContext);
+    const perPerson = (TRIP_COST / riders.length).toFixed(2);
+    return (
+        <div className="min-h-screen bg-uber-gray-50">
+            <TopBar title="Your Group Plan"/>
+            <main className="pt-14 pb-32">
+                <div className="relative h-52 overflow-hidden">
+                    <MapBg grayscale={false} opacity={80} className="relative"/>
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-card flex items-center gap-2">
+                        <Icon name="route" size={16}/><span className="text-xs font-bold">6.4 mi · ~32 min</span>
                     </div>
-                </header>
-            );
-        };
+                </div>
 
-        const BottomNav = ({ active }) => {
-            const navItems = [
-                { id: 'home', icon: 'home', label: 'Home', path: '/' },
-                { id: 'activity', icon: 'history', label: 'Activity', path: '/activity' },
-                { id: 'account', icon: 'person', label: 'Account', path: '/account' },
-                { id: 'safety', icon: 'shield', label: 'Safety', path: '/safety' }
-            ];
-
-            return (
-                <nav className="fixed bottom-0 left-0 w-full flex justify-around items-center bg-surface border-t border-outline-variant shadow-md h-16 z-50 px-4 pb-safe">
-                    {navItems.map(item => (
-                        <Link 
-                            key={item.id} 
-                            to={item.path} 
-                            className={`flex flex-col items-center justify-center transition-all ${active === item.id ? 'text-primary font-bold scale-105' : 'text-on-secondary-container hover:opacity-80'}`}
-                        >
-                            <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: active === item.id ? "'FILL' 1" : "'FILL' 0" }}>{item.icon}</span>
-                            <span className="font-label-sm text-label-sm">{item.label}</span>
-                        </Link>
+                {/* Stats Row */}
+                <div className="bg-white border-b border-uber-gray-100 px-4 py-3 grid grid-cols-4 gap-2">
+                    {[{l:'Total',v:`$${TRIP_COST}`},{l:'Riders',v:riders.length},{l:'Vehicles',v:'2'},{l:'ETA',v:DESTINATION.eta}].map((s,i) => (
+                        <div key={i} className={`text-center ${i>0?'border-l border-uber-gray-100':''}`}>
+                            <p className="text-[10px] text-uber-gray-400 uppercase font-bold tracking-wider">{s.l}</p>
+                            <p className="text-sm font-bold font-display">{s.v}</p>
+                        </div>
                     ))}
-                </nav>
-            );
-        };
-
-        // --- Screen Components ---
-
-        const HomePage = () => {
-            const navigate = useNavigate();
-            return (
-                <div className="flex flex-col min-h-screen text-on-surface">
-                    <TopAppBar title="Group Trip" showBack={false} />
-                    <main className="flex-grow pt-16 relative bg-surface">
-                        <div className="absolute inset-0 z-0">
-                            <div className="w-full h-full bg-cover bg-center grayscale opacity-60" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u")'}}></div>
-                        </div>
-                        <div className="relative z-10 px-margin-mobile py-lg flex flex-col gap-md">
-                            <div className="bg-surface-container-lowest custom-shadow-md rounded-xl p-md flex flex-col gap-sm">
-                                <div className="flex items-start gap-md">
-                                    <div className="flex flex-col items-center py-2 gap-1 h-full">
-                                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                                        <div className="w-0.5 h-12 bg-outline-variant"></div>
-                                        <div className="w-2 h-2 bg-primary"></div>
-                                    </div>
-                                    <div className="flex-grow flex flex-col gap-sm">
-                                        <div className="bg-surface-container-low p-sm rounded-lg flex items-center justify-between">
-                                            <span className="font-label-md text-label-md text-on-surface">Current Location</span>
-                                            <span className="material-symbols-outlined text-secondary text-[20px]">my_location</span>
-                                        </div>
-                                        <div className="bg-surface-container-low p-sm rounded-lg flex items-center justify-between border-b-2 border-primary">
-                                            <input className="bg-transparent border-none focus:ring-0 p-0 font-label-md text-label-md text-on-surface w-full" placeholder="Where to?" type="text" defaultValue="SFO International Airport" />
-                                            <span className="material-symbols-outlined text-secondary text-[20px]">add</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button onClick={() => navigate('/join-lobby')} className="bg-primary text-on-primary rounded-xl flex flex-col gap-sm text-left custom-shadow-md hover:opacity-90 active:scale-[0.98] transition-all group overflow-hidden relative p-md">
-                                <div className="flex items-center justify-between w-full relative z-10">
-                                    <div className="flex flex-col gap-xs">
-                                        <div className="flex items-center gap-sm">
-                                            <span className="material-symbols-outlined text-on-primary">groups</span>
-                                            <h2 className="font-label-md text-label-md font-bold text-on-primary">Plan Together</h2>
-                                        </div>
-                                        <p className="font-body-sm text-body-sm text-surface-variant/90">One booking for your group.</p>
-                                    </div>
-                                    <div className="bg-surface-container-lowest text-primary px-4 py-2 rounded-lg font-label-md font-bold">Start</div>
-                                </div>
-                                <div className="flex items-center justify-between mt-sm relative z-10 w-full">
-                                    <p className="font-label-sm text-label-sm text-surface-variant/70">We'll coordinate pickups automatically.</p>
-                                    <div className="flex -space-x-2">
-                                        {[1,2].map(i => <div key={i} className="w-6 h-6 rounded-full border-2 border-primary bg-surface-container bg-cover" style={{backgroundImage: `url('https://images.unsplash.com/photo-${i === 1 ? '1500648767791-00dcc994a43e' : '1438761681033-6461ffad8d80'}?auto=format&fit=crop&q=80&w=100&h=100')`}}></div>)}
-                                        <div className="w-6 h-6 rounded-full border-2 border-primary bg-secondary flex items-center justify-center text-[8px] font-bold text-on-primary">+4</div>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <div className="flex flex-col gap-xs mt-sm">
-                                <h3 className="font-label-md text-label-md text-secondary mb-2 px-sm uppercase tracking-wider">Recent Destinations</h3>
-                                <div className="bg-surface-container-lowest rounded-xl overflow-hidden divide-y divide-outline-variant/30 custom-shadow-md">
-                                    {['Home', 'Office', 'Chase Center'].map((place, idx) => (
-                                        <button key={idx} className="w-full p-md flex items-center gap-md hover:bg-surface-container-high transition-colors text-left">
-                                            <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
-                                                <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>{idx === 0 ? 'home' : idx === 1 ? 'work' : 'schedule'}</span>
-                                            </div>
-                                            <div className="flex-grow">
-                                                <p className="font-label-md text-label-md font-bold">{place}</p>
-                                                <p className="font-body-sm text-body-sm text-secondary">San Francisco, CA</p>
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                    <BottomNav active="home" />
                 </div>
-            );
-        };
 
-        const JoinLobbyPage = () => {
-            const navigate = useNavigate();
-            const [status, setStatus] = useState("Optimizing route for 7 people...");
-            const friends = [
-                { name: 'Alex', me: true, img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e' },
-                { name: 'Marcus', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e' },
-                { name: 'Sarah', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80' },
-                { name: 'John', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d' },
-                { name: 'James', img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6' },
-                { name: 'Harvey', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d' },
-                { name: 'Mike', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7' }
-            ];
-
-            useEffect(() => {
-                const timer = setTimeout(() => navigate('/plan-overview'), 3000);
-                return () => clearTimeout(timer);
-            }, []);
-
-            return (
-                <div className="bg-background text-on-surface font-body-md min-h-screen">
-                    <TopAppBar title="Group Trip" statusLabel="LIVE" />
-                    <main className="relative pt-14 pb-16 flex flex-col min-h-screen">
-                        <div className="absolute inset-0 z-0 overflow-hidden bg-surface-dim/20">
-                            <div className="w-full h-full bg-cover bg-center grayscale opacity-40" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrllAlaY0KVFFaXnqPfuvpwcqYHP84bxa9xSZqW1zzvy9WktZhKEyUhtG6keBLSf3nMdOogVWCTRGlUKrJogk7ZNpLw0erP4uKUwSS2eob3xAyxoYtBg8KbtqG5pqXBdc3Z8AbjWyqdcGlHdxUYJae9Ji9jT7ktM4GxvgjS0ziFK4B8A6xsNWFfJ4fMGp_XodMA8ETmmVMbK8oyCZQmMo9FNo84h6GPpRrIhDVOOUFxzQ9WsvwBko_')"}}></div>
-                        </div>
-                        <div className="relative z-10 mt-auto px-margin-mobile pb-lg max-w-xl mx-auto w-full">
-                            <div className="bg-surface/90 backdrop-blur-md rounded-xl p-md shadow-md mb-md border border-outline-variant/30 overflow-hidden relative">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-surface-container">
-                                    <div className="h-full bg-primary transition-all duration-1000 ease-linear" style={{width: '65%'}}></div>
-                                </div>
-                                <div className="flex flex-col gap-xs pt-2">
-                                    <div className="flex items-center gap-sm text-on-surface-variant opacity-60">
-                                        <span className="material-symbols-outlined text-[16px]">check_circle</span>
-                                        <span className="text-label-sm">Marcus joined</span>
-                                    </div>
-                                    <div className="flex items-center gap-sm text-primary font-bold animate-pulse">
-                                        <span className="material-symbols-outlined text-[18px]" style={{fontVariationSettings: "'FILL' 1"}}>sync</span>
-                                        <span className="text-label-md">{status}</span>
-                                    </div>
-                                </div>
+                <div className="px-4 mt-4 space-y-4">
+                    {/* Vehicle Breakdown */}
+                    <Card className="overflow-hidden">
+                        <div className="p-4 space-y-3">
+                            <div className="flex justify-between items-center">
+                                <h2 className="font-display font-bold">Recommended Vehicles</h2>
+                                <span className="flex items-center gap-1 text-[11px] font-bold bg-uber-gray-50 px-2 py-0.5 rounded"><Icon name="auto_awesome" size={12} fill/> Smart Pick</span>
                             </div>
-                            <div className="bg-surface-container-lowest rounded-xl shadow-md border border-outline-variant/50 p-md flex flex-col gap-md">
-                                <div className="flex justify-between items-center">
-                                    <h2 className="font-headline-md text-headline-md text-primary">Participants</h2>
-                                    <span className="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-2 py-1 rounded-full">7 Joined</span>
+                            {[{t:'UberX',p:3,c:'$18.20',ic:'directions_car'},{t:'UberXL',p:4,c:'$24.30',ic:'airport_shuttle'}].map((v,i) => (
+                                <div key={i} className="flex items-center gap-3 p-3 bg-uber-gray-50 rounded-lg">
+                                    <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-card"><Icon name={v.ic} size={20}/></div>
+                                    <div className="flex-1"><p className="text-sm font-bold">{v.t}</p><p className="text-xs text-uber-gray-500">{v.p} passengers</p></div>
+                                    <span className="text-sm font-bold">{v.c}</span>
                                 </div>
-                                <div className="flex flex-wrap gap-md">
-                                    {friends.map((f, i) => (
-                                        <div key={i} className="flex flex-col items-center gap-xs animate-pop-in" style={{animationDelay: `${i * 0.1}s`}}>
-                                            <div className={`relative w-16 h-16 rounded-full border-2 ${f.me ? 'border-primary' : 'border-outline-variant'} p-0.5`}>
-                                                <div className="w-full h-full rounded-full bg-cover bg-center" style={{backgroundImage: `url('${f.img}?auto=format&fit=crop&q=80&w=100&h=100')`}}></div>
-                                                {f.me && <div className="absolute -bottom-1 -right-1 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">ME</div>}
-                                            </div>
-                                            <span className="font-label-md text-label-md text-primary">{f.name}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="border-t border-outline-variant pt-md">
-                                    <button className="w-full bg-primary text-on-primary font-bold py-md rounded-lg flex items-center justify-center gap-sm hover:opacity-90 transition-opacity">
-                                        <span className="material-symbols-outlined">share</span>
-                                        <span>Invite more friends</span>
-                                    </button>
-                                </div>
+                            ))}
+                            <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg">
+                                <Icon name="info" size={16} className="text-blue-500 mt-0.5 shrink-0"/>
+                                <p className="text-xs text-blue-700">Split into two vehicles to accommodate {riders.length} riders. ~${perPerson}/person.</p>
                             </div>
                         </div>
-                    </main>
-                    <BottomNav active="activity" />
-                </div>
-            );
-        };
+                    </Card>
 
-        const PlanOverviewPage = () => {
-            const navigate = useNavigate();
-            return (
-                <div className="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
-                    <TopAppBar title="Group Plan" />
-                    <main className="flex-grow pt-14 pb-32">
-                        <div className="relative w-full h-[240px] overflow-hidden">
-                            <div className="w-full h-full bg-cover bg-center grayscale" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u')"}}></div>
-                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur px-4 py-1.5 rounded-full border border-outline-variant shadow-sm flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary text-[18px]">route</span>
-                                <span className="font-label-md text-label-md text-primary font-bold">6.4 miles • 22 min</span>
-                            </div>
+                    {/* Pickup Sequence */}
+                    <Card className="p-4">
+                        <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-3">Pickup Sequence</h3>
+                        <div className="space-y-0">
+                            {riders.filter(r=>r.vehicle===1).map((r, i, arr) => (
+                                <TimelineItem key={r.id} avatar={r.img} name={`${r.name} ${r.last}${r.me?' (You)':''}`} address={`Pickup: ${r.pickup}`} time={`8:${10+i*4} PM`} isLast={i===arr.length-1 && false}/>
+                            ))}
+                            <TimelineItem name={DESTINATION.name} address={`Arrival: ${DESTINATION.address}`} time={DESTINATION.eta} status="upcoming" isLast/>
                         </div>
-                        <div className="bg-surface-container-lowest border-b border-outline-variant px-margin-mobile py-md grid grid-cols-4 gap-2">
-                            {[{l:'Cost', v:'$42.50'}, {l:'Riders', v:'7 Total'}, {l:'Vehicles', v:'2 (X, XL)'}, {l:'Arrival', v:'8:32 PM'}].map((s,i) => (
-                                <div key={i} className={`text-center ${i > 0 ? 'border-l border-outline-variant/30' : ''}`}>
-                                    <p className="font-label-sm text-[10px] uppercase text-on-surface-variant tracking-wider">{s.l}</p>
-                                    <p className="font-label-md text-primary font-bold">{s.v}</p>
+                    </Card>
+
+                    {/* Why This Plan */}
+                    <Card className="p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                            <Icon name="lightbulb" size={18} fill className="text-uber-warning"/>
+                            <h3 className="font-display font-bold text-sm">Why this plan?</h3>
+                        </div>
+                        <div className="space-y-2">
+                            {['Fastest overall arrival for everyone','Minimizes total drive time by 18%',`$23 less than booking ${riders.length} individual rides`].map((r,i) => (
+                                <div key={i} className="flex items-start gap-2">
+                                    <Icon name="check_circle" size={16} fill className="text-uber-success mt-0.5 shrink-0"/>
+                                    <span className="text-sm text-uber-gray-600">{r}</span>
                                 </div>
                             ))}
                         </div>
-                        <div className="px-margin-mobile mt-md space-y-lg">
-                            <section>
-                                <div className="flex justify-between items-end mb-sm">
-                                    <h2 className="font-headline-md text-headline-md text-primary">Recommended Plan</h2>
-                                    <div className="flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded text-primary">
-                                        <span className="material-symbols-outlined text-[14px]" style={{fontVariationSettings: "'FILL' 1"}}>stars</span>
-                                        <span className="font-label-sm text-[11px] font-bold uppercase">Smart Pick</span>
-                                    </div>
-                                </div>
-                                <div className="bg-surface-container-lowest rounded-xl border-2 border-primary shadow-lg overflow-hidden">
-                                    <div className="p-md space-y-md">
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center gap-md">
-                                                <div className="w-10 h-10 bg-surface-container rounded-lg overflow-hidden flex items-center justify-center"><span className="material-symbols-outlined">directions_car</span></div>
-                                                <div><h3 className="font-label-md font-bold text-primary">Uber X</h3><p className="font-body-sm text-on-surface-variant">3 passengers</p></div>
-                                            </div>
-                                            <p className="font-label-md font-bold text-primary">$18.20</p>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center gap-md">
-                                                <div className="w-10 h-10 bg-surface-container rounded-lg overflow-hidden flex items-center justify-center"><span className="material-symbols-outlined">airport_shuttle</span></div>
-                                                <div><h3 className="font-label-md font-bold text-primary">Uber XL</h3><p className="font-body-sm text-on-surface-variant">4 passengers</p></div>
-                                            </div>
-                                            <p className="font-label-md font-bold text-primary">$24.30</p>
-                                        </div>
-                                        <div className="p-sm bg-tertiary-container/5 rounded-lg border border-tertiary-container/10">
-                                            <p className="font-body-sm text-on-surface-variant"><span className="material-symbols-outlined text-[16px] mr-1 align-middle">info</span>Split into two vehicles to accommodate the group.</p>
-                                        </div>
-                                    </div>
-                                    <button onClick={() => navigate('/matching')} className="w-full bg-primary text-on-primary py-md font-bold hover:bg-black/90 transition-colors">Request Both Vehicles</button>
-                                </div>
-                            </section>
+                    </Card>
 
-                            <section>
-                                <h3 className="font-label-md text-on-surface-variant uppercase tracking-widest mb-md">Pickup Sequence</h3>
-                                <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant relative">
-                                    <div className="absolute left-[31px] top-8 bottom-8 w-[2px] bg-primary"></div>
-                                    <div className="space-y-lg relative">
-                                        {['AJ', 'MW', 'SM', 'JD'].map((initials, i) => (
-                                            <div key={i} className="flex items-start gap-md">
-                                                <div className="w-8 h-8 rounded-full border-2 border-primary bg-background z-10 shrink-0 flex items-center justify-center font-bold text-[10px]">{initials}</div>
-                                                <div className="flex-grow pt-0.5">
-                                                    <div className="flex justify-between">
-                                                        <p className="font-label-md font-bold text-primary">{i === 0 ? 'Alex Johnson (You)' : 'Rider ' + (i+1)}</p>
-                                                        <p className="font-label-sm text-on-surface-variant">8:{10 + i*2} PM</p>
-                                                    </div>
-                                                    <p className="font-body-sm text-secondary">Pickup Location Address</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </section>
+                    {/* Alternatives */}
+                    <div>
+                        <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Other Options</h3>
+                        <div className="space-y-2">
+                            {[{t:'2× UberX',d:'Two separate standard cars',p:'$48.20'},{t:'1× Uber Lux XL',d:'Single premium large vehicle',p:'$89.00'}].map((a,i) => (
+                                <Card key={i} className="p-3 flex justify-between items-center opacity-70">
+                                    <div><p className="text-sm font-semibold">{a.t}</p><p className="text-xs text-uber-gray-500">{a.d}</p></div>
+                                    <span className="text-sm font-bold text-uber-gray-500">{a.p}</span>
+                                </Card>
+                            ))}
                         </div>
-                    </main>
-                    <div className="fixed bottom-0 left-0 w-full z-50">
-                        <div className="px-margin-mobile pb-sm pt-4 bg-gradient-to-t from-background via-background to-transparent">
-                            <button onClick={() => navigate('/matching')} className="w-full bg-primary text-on-primary py-md rounded-lg font-headline-md text-headline-md shadow-xl active:scale-[0.98] transition-transform">Confirm Group Plan</button>
-                        </div>
-                        <BottomNav active="activity" />
                     </div>
                 </div>
-            );
-        };
+            </main>
+            <div className="fixed bottom-0 left-0 w-full z-40 bg-gradient-to-t from-uber-gray-50 via-uber-gray-50 to-transparent pt-6 px-4 pb-4">
+                <Btn onClick={() => nav('/matching')}>Confirm Group Plan</Btn>
+            </div>
+        </div>
+    );
+};
 
-        const MatchingPage = () => {
-            const navigate = useNavigate();
-            const [v2Matched, setV2Matched] = useState(false);
+/* ═══════════════════════════════════════════
+   SCREEN 4 — DRIVER MATCHING
+   ═══════════════════════════════════════════ */
+const MatchingPage = () => {
+    const nav = useNavigate();
+    const { v1Status, setV1Status, v2Status, setV2Status, addToast, showModal, riders } = useContext(TripContext);
+    const [elapsed, setElapsed] = useState(0);
 
-            useEffect(() => {
-                const timer = setTimeout(() => setV2Matched(true), 4000);
-                const finalNav = setTimeout(() => navigate('/confirmed'), 7000);
-                return () => { clearTimeout(timer); clearTimeout(finalNav); };
-            }, []);
+    useEffect(() => {
+        setV1Status('searching'); setV2Status('searching');
+        const t1 = setTimeout(() => { setV1Status('matched'); addToast('Vehicle 1 matched — Michael, Toyota Camry', 'success'); }, 2500);
+        const t2 = setTimeout(() => { setV2Status('matched'); addToast('Vehicle 2 matched — Sarah, Ford Explorer', 'success'); }, 5000);
+        const t3 = setTimeout(() => nav('/confirmed'), 7000);
+        const tick = setInterval(() => setElapsed(e => e + 1), 1000);
+        return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearInterval(tick); };
+    }, []);
 
-            return (
-                <div className="bg-background min-h-screen overflow-hidden">
-                    <TopAppBar title="Group Trip" />
-                    <main className="relative h-screen w-full pt-16">
-                        <div className="absolute inset-0 bg-surface-container-low grayscale opacity-60" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmkMIuycw69EGBSYhEp30nsp1yPn3VvqCWUcHQs4oNMRJWTNFwUnadC5vqlAQbpTpfnEPUvNWZDlLpvzAAOqUGB8ybcX3K9uw6_PmFAoCEjh9B-c-N2-Vm9WrrU1pZrNjTjVVPkJy96MLt--V5Dqa2LYZk7SLjKNXBrJkm_8Tcz0OICEpST-W6VZYJLSiSrVc_76RUA48scRDtcNniJ-F-WXvN-INNZJ1BM-6G3_RHkNlUvMo7G3AJ')", backgroundSize: 'cover'}}></div>
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div className="search-ripple"></div>
-                            <div className="w-4 h-4 bg-primary rounded-full relative z-10 border-2 border-white"></div>
-                        </div>
-                        
-                        <div className="absolute inset-0 flex flex-col justify-end p-margin-mobile pb-24 pointer-events-none">
-                            <div className="bg-surface shadow-md rounded-xl w-full max-w-md mx-auto pointer-events-auto border border-outline-variant p-md">
-                                <h2 className="font-headline-md text-headline-md text-primary mb-xs">Assembling your trip...</h2>
-                                <p className="text-on-secondary-container font-label-md mb-md">Optimizing for 2 vehicles and 7 stops</p>
-                                
-                                <div className="space-y-md">
-                                    <div className="bg-surface-container-low p-md rounded-lg border border-outline-variant/30 flex items-center gap-md">
-                                        <div className="relative w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
-                                            <span className="material-symbols-outlined">directions_car</span>
-                                            <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center border-2 border-surface">
-                                                <span className="material-symbols-outlined text-[12px] font-bold">check</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between"><span className="font-label-md text-primary font-bold">Vehicle 1 • UberX</span><span className="text-green-600 font-label-sm font-bold">MATCHED</span></div>
-                                            <p className="text-body-sm text-secondary">Driver: Michael • Toyota Camry</p>
-                                        </div>
-                                    </div>
+    const handleCancel = () => {
+        showModal({
+            icon: 'cancel', iconBg: 'bg-red-50', iconColor: 'text-uber-danger',
+            title: 'Cancel Group Trip?',
+            body: `This will cancel the trip for all ${riders.length} riders. ${v1Status==='matched'?'A cancellation fee may apply since a driver has already been matched.':'No cancellation fee will be charged.'}`,
+            actions: [
+                { label: 'Cancel Trip', variant: 'danger', action: () => { setV1Status('idle'); setV2Status('idle'); nav('/'); }},
+                { label: 'Keep Waiting', variant: 'secondary' }
+            ]
+        });
+    };
 
-                                    <div className={`p-md rounded-lg border transition-all duration-500 flex items-center gap-md relative overflow-hidden ${v2Matched ? 'bg-surface-container-low border-outline-variant/30' : 'bg-surface-container border-primary/20'}`}>
-                                        {!v2Matched && <div className="absolute bottom-0 left-0 h-1 bg-primary animate-pulse w-full"></div>}
-                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${v2Matched ? 'bg-primary text-white' : 'bg-secondary-container text-primary'}`}>
-                                            <span className="material-symbols-outlined">airport_shuttle</span>
-                                            {v2Matched && <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full w-5 h-5 flex items-center justify-center border-2 border-surface"><span className="material-symbols-outlined text-[12px] font-bold">check</span></div>}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between">
-                                                <span className="font-label-md text-primary font-bold">Vehicle 2 • UberXL</span>
-                                                <span className={`${v2Matched ? 'text-green-600' : 'text-primary/60'} font-label-sm font-bold uppercase`}>{v2Matched ? 'MATCHED' : 'SEARCHING...'}</span>
-                                            </div>
-                                            <p className="text-body-sm text-secondary">{v2Matched ? 'Driver: Sarah • Ford Explorer' : 'Finding nearby drivers...'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
+    const VehicleCard = ({ num, type, status, driver, car }) => (
+        <div className={`p-4 rounded-xl border relative overflow-hidden transition-all duration-500 ${status==='matched'?'bg-white border-uber-gray-100':'bg-uber-gray-50 border-uber-gray-200'}`}>
+            {status==='searching' && <div className="absolute bottom-0 left-0 w-full h-1 shimmer-bar"/>}
+            <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center relative transition-colors ${status==='matched'?'bg-uber-black text-white':'bg-uber-gray-200 text-uber-gray-500'}`}>
+                    <Icon name={num===1?'directions_car':'airport_shuttle'} size={22}/>
+                    {status==='matched' && <div className="absolute -bottom-0.5 -right-0.5 bg-uber-success text-white rounded-full w-5 h-5 flex items-center justify-center border-2 border-white"><Icon name="check" size={10}/></div>}
                 </div>
-            );
-        };
+                <div className="flex-1">
+                    <div className="flex justify-between items-center">
+                        <span className="text-sm font-bold">Vehicle {num} · {type}</span>
+                        <span className={`text-[11px] font-bold uppercase ${status==='matched'?'text-uber-success':'text-uber-gray-400'}`}>
+                            {status==='matched' ? 'Matched' : <span className="dot-pulse"><span>·</span><span>·</span><span>·</span></span>}
+                        </span>
+                    </div>
+                    <p className="text-xs text-uber-gray-500 mt-0.5">{status==='matched' ? `${driver} · ${car}` : 'Finding nearby drivers...'}</p>
+                </div>
+            </div>
+        </div>
+    );
 
-        const ConfirmedPage = () => {
-            const navigate = useNavigate();
-            return (
-                <div className="bg-background min-h-screen">
-                    <TopAppBar title="Trip Confirmed" />
-                    <main className="pt-14 pb-40">
-                        <section className="bg-surface-container-lowest px-margin-mobile py-sm flex items-center justify-between border-b border-outline-variant/30 shadow-sm">
-                            <div className="flex items-center gap-sm">
-                                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center animate-pulse"><span className="material-symbols-outlined text-white text-lg">check_circle</span></div>
-                                <div><h2 className="font-label-md font-bold text-primary">Scheduled</h2><p className="text-[11px] text-on-secondary-container">Your group ride is active</p></div>
-                            </div>
-                            <button onClick={() => navigate('/trip-room')} className="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold text-xs uppercase">Live Tracking</button>
-                        </section>
-                        <div className="relative w-full h-[300px] bg-surface-dim/20">
-                            <div className="w-full h-full bg-cover bg-center" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtnrR68BuppShTRVukubeAM1LGm08aJ_MpdG2MONhJINuvwOBnrugJdDm7KE6lrHas-1Vi-DMiYpknQgbfGL0yG2Qtjo7lVUzsc8B3GJoNNeb3DYODAis-wkOgojE8QW_8wXJRH4IPbVXLcn3VZgpnpXIVv9QPbFubHc_JtabP6JkAe6slUFfcrOWt8kg8_HlNHyChiDEKofht4_kA1LdMYn5Wom0vnWYN542hgZpE6tgRqp_A7d7u')"}}></div>
+    return (
+        <div className="min-h-screen bg-uber-gray-50 overflow-hidden">
+            <TopBar title="Group Trip" right={<span className="text-xs text-uber-gray-400 font-mono">{elapsed}s</span>}/>
+            <main className="relative h-screen pt-14">
+                <MapBg opacity={40}/>
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <div className="ripple"/><div className="ripple" style={{animationDelay:'.6s'}}/>
+                    <div className="w-4 h-4 bg-uber-black rounded-full relative z-10 border-2 border-white"/>
+                </div>
+                <div className="absolute inset-x-0 bottom-0 p-4 pb-6 flex flex-col gap-3">
+                    <Card className="p-4">
+                        <h2 className="font-display font-bold text-base mb-1">Assembling your trip...</h2>
+                        <p className="text-xs text-uber-gray-500 mb-4">Coordinating 2 vehicles for {riders.length} riders</p>
+                        <div className="space-y-3">
+                            <VehicleCard num={1} type="UberX" status={v1Status} driver="Michael T." car="Toyota Camry"/>
+                            <VehicleCard num={2} type="UberXL" status={v2Status} driver="Sarah K." car="Ford Explorer"/>
                         </div>
-                        <div className="px-margin-mobile mt-lg space-y-gutter">
-                            <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant relative">
-                                <h3 className="font-label-md uppercase tracking-wider mb-md opacity-60">Timeline</h3>
-                                <div className="space-y-lg relative">
-                                    {[1,2,3].map(i => (
-                                        <div key={i} className="relative flex gap-md step-line">
-                                            <div className="relative z-10 w-8 h-8 rounded-full border-2 border-primary bg-white flex items-center justify-center overflow-hidden">
-                                                <div className="w-full h-full bg-surface-container flex items-center justify-center font-bold">{i === 1 ? 'S' : i === 2 ? 'M' : 'J'}</div>
-                                            </div>
-                                            <div className="flex-grow pt-1">
-                                                <div className="flex justify-between items-baseline"><p className="font-label-md font-bold">Rider {i}</p><p className="font-label-sm opacity-60">2:{40 + i*10} PM</p></div>
-                                                <p className="font-body-sm text-on-secondary-container">Pickup: Market St</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    <div className="relative flex gap-md">
-                                        <div className="relative z-10 w-8 h-8 rounded-lg bg-primary flex items-center justify-center"><span className="material-symbols-outlined text-white text-sm">location_on</span></div>
-                                        <div className="flex-grow pt-1">
-                                            <div className="flex justify-between items-baseline"><p className="font-label-md font-bold">Destination</p><p className="font-label-sm font-bold text-primary">3:42 PM</p></div>
-                                            <p className="font-body-sm text-primary font-medium">Arrival at The Grand Theatre</p>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div className="flex gap-2 mt-4">
+                            <Btn variant="secondary" onClick={handleCancel} full={false} className="flex-1">Cancel</Btn>
+                            <Btn variant="primary" onClick={() => addToast('Group notified!', 'success')} icon="notifications" full={false} className="flex-1" disabled={v1Status!=='matched'&&v2Status!=='matched'}>Notify Group</Btn>
+                        </div>
+                    </Card>
+                </div>
+            </main>
+        </div>
+    );
+};
+
+/* ═══════════════════════════════════════════
+   SCREEN 5 — TRIP CONFIRMED
+   ═══════════════════════════════════════════ */
+const ConfirmedPage = () => {
+    const nav = useNavigate();
+    const { riders, addToast } = useContext(TripContext);
+    const perPerson = (TRIP_COST / riders.length).toFixed(2);
+    return (
+        <div className="min-h-screen bg-uber-gray-50">
+            <TopBar title="Trip Confirmed"/>
+            <main className="pt-14 pb-24">
+                {/* Success Header */}
+                <div className="bg-white px-4 py-6 text-center border-b border-uber-gray-100">
+                    <div className="w-14 h-14 bg-uber-success rounded-full flex items-center justify-center mx-auto mb-3 anim-pop"><Icon name="check" size={28} className="text-white"/></div>
+                    <h2 className="font-display font-bold text-xl anim-slide">Trip Confirmed</h2>
+                    <p className="text-sm text-uber-gray-500 mt-1 anim-slide" style={{animationDelay:'.1s'}}>Your group ride is scheduled and synced.</p>
+                </div>
+
+                {/* Map Preview */}
+                <div className="relative h-44 overflow-hidden"><MapBg grayscale={false} opacity={90}/></div>
+
+                <div className="px-4 mt-4 space-y-4">
+                    {/* Timeline */}
+                    <Card className="p-4">
+                        <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-3">Timeline & Pickup</h3>
+                        {riders.filter(r=>r.vehicle===1).map((r, i, arr) => (
+                            <TimelineItem key={r.id} avatar={r.img} name={`${r.name}${r.me?' (You)':''}`} address={`Pickup: ${r.pickup}`} time={`8:${10+i*6} PM`} status="upcoming"/>
+                        ))}
+                        <TimelineItem name={DESTINATION.name} address={`Arrival: ${DESTINATION.address}`} time={DESTINATION.eta} status="upcoming" isLast/>
+                    </Card>
+
+                    {/* Reassurance */}
+                    <Card className="p-4 flex gap-3">
+                        <div className="w-10 h-10 bg-uber-gray-50 rounded-full flex items-center justify-center shrink-0"><Icon name="notifications_active" size={20} fill/></div>
+                        <div>
+                            <p className="text-sm font-bold">Stay Informed</p>
+                            <p className="text-xs text-uber-gray-500 mt-1">You'll receive pickup reminders and live updates. Track every rider's progress in the Trip Room.</p>
+                        </div>
+                    </Card>
+
+                    {/* Split Fare + Safety */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <Card className="p-4">
+                            <p className="text-[11px] text-uber-gray-400 uppercase font-bold">Split Fare</p>
+                            <p className="font-display font-bold text-lg mt-1">${perPerson}</p>
+                            <p className="text-[11px] text-uber-gray-400">each</p>
+                        </Card>
+                        <Card className="p-4">
+                            <p className="text-[11px] text-uber-gray-400 uppercase font-bold">Safety PIN</p>
+                            <p className="font-display font-bold text-lg mt-1 tracking-[.2em]">{SAFETY_PIN}</p>
+                            <p className="text-[11px] text-uber-gray-400">confirm to driver</p>
+                        </Card>
+                    </div>
+                </div>
+            </main>
+            <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-uber-gray-100 p-4 space-y-2">
+                <Btn onClick={() => nav('/trip-room')}>Open Trip Room</Btn>
+                <Btn variant="secondary" icon="share" onClick={() => addToast('Live status link copied!', 'success')}>Share Live Status</Btn>
+            </div>
+        </div>
+    );
+};
+
+/* ═══════════════════════════════════════════
+   SCREEN 6 — TRIP ROOM
+   ═══════════════════════════════════════════ */
+const TripRoomPage = () => {
+    const nav = useNavigate();
+    const { riders, pickupIndex, setPickupIndex, addToast, showModal } = useContext(TripContext);
+    const [messages, setMessages] = useState([
+        { type:'system', text:'Trip started — Driver Michael is en route', icon:'directions_car', time:'8:05 PM' },
+    ]);
+    const [inputVal, setInputVal] = useState('');
+    const chatRef = useRef(null);
+
+    // Simulate live events
+    useEffect(() => {
+        const events = [
+            { delay:2000, action:() => { setPickupIndex(0); setMessages(m=>[...m, {type:'system', text:`${riders[0]?.name} has been picked up`, icon:'check_circle', time:'8:12 PM'}]); }},
+            { delay:4000, action:() => setMessages(m=>[...m, {type:'user', name:'Alex', text:"Hey Marcus, we have one extra suitcase. Hope that's okay!", time:'8:15 PM'}]) },
+            { delay:6000, action:() => setMessages(m=>[...m, {type:'driver', name:'Michael', text:"No problem at all. Plenty of room.", time:'8:16 PM'}]) },
+            { delay:8000, action:() => { setPickupIndex(1); setMessages(m=>[...m, {type:'system', text:`${riders[1]?.name} has been picked up`, icon:'check_circle', time:'8:22 PM'}]); addToast(`${riders[1]?.name} picked up!`, 'success'); }},
+            { delay:10000, action:() => setMessages(m=>[...m, {type:'alert', text:'Driver is 2 minutes from next pickup', icon:'info', time:'8:28 PM'}]) },
+            { delay:12000, action:() => { setPickupIndex(2); setMessages(m=>[...m, {type:'system', text:`${riders[2]?.name} has been picked up`, icon:'check_circle', time:'8:30 PM'}]); }},
+        ];
+        const timers = events.map(e => setTimeout(e.action, e.delay));
+        return () => timers.forEach(clearTimeout);
+    }, []);
+
+    useEffect(() => { chatRef.current?.scrollTo(0, chatRef.current.scrollHeight); }, [messages]);
+
+    const sendMsg = () => {
+        if (!inputVal.trim()) return;
+        setMessages(m => [...m, { type:'user', name:'Alex', text:inputVal, time:'Now' }]);
+        setInputVal('');
+    };
+
+    const handleNoShow = (rider) => {
+        showModal({
+            icon:'person_off', iconBg:'bg-orange-50', iconColor:'text-uber-warning',
+            title:`${rider.name} not at pickup?`,
+            body:`The driver has waited 5 minutes. Skip this pickup and continue to the next rider?`,
+            actions:[
+                { label:`Skip ${rider.name}'s Pickup`, variant:'danger', action:() => { setPickupIndex(p=>p+1); addToast(`${rider.name}'s pickup skipped`, 'warning'); }},
+                { label:'Wait 2 More Minutes', variant:'secondary' }
+            ]
+        });
+    };
+
+    const currentPickup = riders[Math.min(pickupIndex + 1, riders.length - 1)];
+    const nextPickup = riders[Math.min(pickupIndex + 2, riders.length - 1)];
+
+    return (
+        <div className="min-h-screen bg-uber-gray-50 flex flex-col">
+            <TopBar title="Trip Room" statusLabel="#GT-8821"/>
+            <main className="flex-1 pt-14 pb-16 flex flex-col overflow-hidden">
+                {/* Map + Driver */}
+                <div className="relative h-52 shrink-0 overflow-hidden">
+                    <MapBg grayscale={false} opacity={70}/>
+                    <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur p-3 rounded-xl shadow-heavy flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="relative">
+                                <Avatar src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" size={44}/>
+                                <div className="absolute -bottom-0.5 -right-0.5 bg-uber-success text-white p-0.5 rounded-full border-2 border-white"><Icon name="check" size={8}/></div>
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold">Michael T.</p>
+                                <p className="text-[11px] text-uber-gray-500">Toyota Camry · KLU 992</p>
                             </div>
                         </div>
-                    </main>
-                    <footer className="fixed bottom-0 left-0 w-full p-md bg-surface border-t border-outline-variant z-40 safe-bottom">
-                        <button onClick={() => navigate('/trip-room')} className="w-full h-12 bg-primary text-white font-bold rounded-lg mb-2">Open Trip Room</button>
-                    </footer>
+                        <div className="text-right">
+                            <p className="text-[10px] text-uber-gray-400 uppercase">ETA</p>
+                            <p className="font-display font-bold">4 min</p>
+                        </div>
+                    </div>
                 </div>
-            );
-        };
 
-        const TripRoomPage = () => {
-            const navigate = useNavigate();
-            return (
-                <div className="bg-background min-h-screen selection:bg-secondary-container">
-                    <TopAppBar title="Trip Room" statusLabel="#GT-8821" />
-                    <main className="pt-16 pb-20 max-w-4xl mx-auto">
-                        <section className="relative h-72 w-full overflow-hidden">
-                            <div className="w-full h-full bg-cover bg-center grayscale brightness-50" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRPAFzzqHbFLwN7Bk2J2o79ymle6tZeJQqi4u7PWGQwmYl6OKofyfRrLAVqC_gIW2jAe6gJ6jXeZVnFT3gzwI2Euu0EC4-imIeOHITuxHelFcZcIlvr5mmb7dVCXvjo0SevSJ2H1J5Li-nhqbhxJTlzTnsLohSLjqh8jEgcxGdfoGh-zLK_RA_XWV3CzqwmLvypRK4_H0DaF_2PohxA0VsloS2gyoURc8VMb6a3g0bTfE_EZ8Y4_Pa')"}}></div>
-                            <div className="absolute bottom-md left-md right-md bg-white/95 backdrop-blur p-md rounded-xl flex items-center justify-between shadow-lg">
-                                <div className="flex items-center gap-md">
-                                    <div className="relative">
-                                        <div className="w-12 h-12 rounded-full bg-slate-200 bg-cover" style={{backgroundImage: "url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e')"}}></div>
-                                        <div className="absolute -bottom-1 -right-1 bg-primary text-white p-0.5 rounded-full border-2 border-white"><span className="material-symbols-outlined text-[10px]">verified</span></div>
-                                    </div>
-                                    <div><h3 className="font-headline-md text-sm font-bold">Marcus W.</h3><p className="font-body-sm text-xs opacity-60">Toyota Prius • KLU 992</p></div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-label-sm text-[10px] uppercase opacity-60">ETA</p>
-                                    <p className="font-headline-md text-primary">4 mins</p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section className="px-margin-mobile mt-lg">
-                            <div className="grid grid-cols-2 gap-md">
-                                <div className="bg-surface-container rounded-xl p-md">
-                                    <p className="font-label-sm text-xs flex items-center gap-xs opacity-60"><span className="material-symbols-outlined text-[16px]">location_on</span>Current Pickup</p>
-                                    <p className="font-headline-md font-bold mt-xs">John</p>
-                                    <p className="font-body-sm text-xs truncate">722 Market St, SF</p>
-                                </div>
-                                <div className="bg-surface-container rounded-xl p-md opacity-40">
-                                    <p className="font-label-sm text-xs flex items-center gap-xs opacity-60"><span className="material-symbols-outlined text-[16px]">fast_forward</span>Next Pickup</p>
-                                    <p className="font-headline-md font-bold mt-xs">James</p>
-                                    <p className="font-body-sm text-xs truncate">110 Pine St, SF</p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section className="mt-xl px-margin-mobile">
-                            <h2 className="font-headline-md text-headline-md mb-md">Trip Activity</h2>
-                            <div className="bg-surface-container-low rounded-xl p-md flex flex-col gap-md min-h-[300px]">
-                                <div className="flex flex-col gap-xs max-w-[80%]">
-                                    <div className="bg-surface-container-highest p-md rounded-tr-xl rounded-bl-xl rounded-br-xl">
-                                        <p className="font-body-sm text-body-sm">Hey Marcus, we have one extra suitcase. Hope that's okay!</p>
-                                    </div>
-                                    <span className="font-label-sm text-[10px] opacity-60">Alex • 08:15 AM</span>
-                                </div>
-                                <div className="flex flex-col items-end gap-xs self-end max-w-[80%]">
-                                    <div className="bg-primary text-on-primary p-md rounded-tl-xl rounded-bl-xl rounded-br-xl">
-                                        <p className="font-body-sm text-body-sm">No problem at all. Loading Sarah's bags now.</p>
-                                    </div>
-                                    <span className="font-label-sm text-[10px] opacity-60">Marcus (Driver) • 08:24 AM</span>
-                                </div>
-                                <div className="mt-auto">
-                                    <button onClick={() => navigate('/complete')} className="w-full bg-secondary-container text-primary font-bold py-3 rounded-xl border border-outline-variant">Simulate Arrival</button>
-                                </div>
-                            </div>
-                        </section>
-                    </main>
+                {/* Pickup Status */}
+                <div className="px-4 mt-3 grid grid-cols-2 gap-2 shrink-0">
+                    <div className="bg-white rounded-xl p-3 border border-uber-gray-100">
+                        <p className="text-[10px] text-uber-gray-400 flex items-center gap-1"><Icon name="location_on" size={12} fill/> Current Pickup</p>
+                        <p className="text-sm font-bold mt-1">{currentPickup?.name}</p>
+                        <p className="text-[11px] text-uber-gray-500 truncate">{currentPickup?.pickup}</p>
+                        <button onClick={() => handleNoShow(currentPickup)} className="text-[11px] text-uber-danger font-bold mt-2 flex items-center gap-1"><Icon name="report" size={12}/> Not here?</button>
+                    </div>
+                    <div className="bg-uber-gray-50 rounded-xl p-3 opacity-60">
+                        <p className="text-[10px] text-uber-gray-400 flex items-center gap-1"><Icon name="fast_forward" size={12}/> Next Pickup</p>
+                        <p className="text-sm font-bold mt-1">{nextPickup?.name}</p>
+                        <p className="text-[11px] text-uber-gray-500 truncate">{nextPickup?.pickup}</p>
+                    </div>
                 </div>
-            );
-        };
 
-        const CompletionPage = () => {
-            const navigate = useNavigate();
-            return (
-                <div className="bg-background min-h-screen flex flex-col">
-                    <TopAppBar title="Trip Completed" />
-                    <main className="flex-1 mt-16 pb-24 px-margin-mobile text-center">
-                        <section className="py-xl flex flex-col items-center">
-                            <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mb-md shadow-md">
-                                <span className="material-symbols-outlined text-white text-5xl">check_circle</span>
-                            </div>
-                            <h2 className="font-headline-lg text-primary mb-xs">Everyone arrived together.</h2>
-                            <p className="font-body-md opacity-60 max-w-xs mx-auto">One booking. One coordinated journey. Completed.</p>
-                        </section>
-
-                        <section className="grid grid-cols-2 gap-md mb-xl text-left">
-                            <div className="col-span-2 p-md bg-tertiary-container rounded-xl text-white relative overflow-hidden">
-                                <span className="font-label-sm uppercase tracking-wider opacity-60">Efficiency Boost</span>
-                                <h3 className="font-display-lg text-2xl font-bold">$42.50 Saved</h3>
-                                <p className="font-body-sm opacity-80">Compared to individual booking</p>
-                            </div>
-                            <div className="p-md bg-surface-container rounded-xl">
-                                <span className="material-symbols-outlined text-primary">group</span>
-                                <p className="font-headline-md font-bold">7 Riders</p>
-                                <p className="text-xs opacity-60">Full crew arrived</p>
-                            </div>
-                            <div className="p-md bg-surface-container rounded-xl">
-                                <span className="material-symbols-outlined text-primary">directions_car</span>
-                                <p className="font-headline-md font-bold">2 Vehicles</p>
-                                <p className="text-xs opacity-60">Coordinated fleet</p>
-                            </div>
-                        </section>
-
-                        <button onClick={() => navigate('/')} className="w-full bg-primary text-white py-4 rounded-lg font-bold">Return Home</button>
-                    </main>
+                {/* Chat */}
+                <div className="flex-1 px-4 mt-3 flex flex-col min-h-0">
+                    <h3 className="font-display font-bold text-sm mb-2 shrink-0">Trip Activity</h3>
+                    <div ref={chatRef} className="flex-1 bg-white rounded-xl border border-uber-gray-100 p-3 overflow-y-auto flex flex-col gap-2">
+                        {messages.map((msg, i) => {
+                            if (msg.type==='system' || msg.type==='alert') return (
+                                <div key={i} className="self-center anim-fade">
+                                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium ${msg.type==='alert'?'bg-uber-warning/10 text-uber-warning border border-uber-warning/20':'bg-uber-gray-50 text-uber-gray-600'}`}>
+                                        <Icon name={msg.icon||'info'} size={13} fill/>{msg.text}
+                                    </div>
+                                </div>
+                            );
+                            const isMe = msg.type==='user' && msg.name==='Alex';
+                            const isDriver = msg.type==='driver';
+                            return (
+                                <div key={i} className={`flex flex-col gap-0.5 max-w-[80%] anim-slide ${isMe||isDriver?'self-end items-end':'self-start items-start'}`}>
+                                    <div className={`px-3 py-2 rounded-2xl text-sm ${isDriver?'bg-uber-black text-white rounded-br-sm':isMe?'bg-uber-gray-100 rounded-br-sm':'bg-uber-gray-100 rounded-bl-sm'}`}>{msg.text}</div>
+                                    <span className="text-[10px] text-uber-gray-400">{msg.name}{isDriver?' (Driver)':''} · {msg.time}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
-            );
-        };
 
-        // --- App Component ---
+                {/* Input */}
+                <div className="px-4 py-2 shrink-0">
+                    <div className="flex gap-2 items-center bg-white rounded-xl border border-uber-gray-200 px-3 h-11">
+                        <input value={inputVal} onChange={e=>setInputVal(e.target.value)} onKeyDown={e=>e.key==='Enter'&&sendMsg()} className="flex-1 text-sm bg-transparent border-none p-0" placeholder="Message group..."/>
+                        <button onClick={sendMsg} className="text-uber-black"><Icon name="send" size={20} fill/></button>
+                    </div>
+                </div>
 
-        const App = () => {
-            return (
-                <MemoryRouter>
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/join-lobby" element={<JoinLobbyPage />} />
-                        <Route path="/plan-overview" element={<PlanOverviewPage />} />
-                        <Route path="/matching" element={<MatchingPage />} />
-                        <Route path="/confirmed" element={<ConfirmedPage />} />
-                        <Route path="/trip-room" element={<TripRoomPage />} />
-                        <Route path="/complete" element={<CompletionPage />} />
-                        {/* Fallback routes for Nav */}
-                        <Route path="/activity" element={<ConfirmedPage />} />
-                        <Route path="/account" element={<CompletionPage />} />
-                        <Route path="/safety" element={<HomePage />} />
-                    </Routes>
-                </MemoryRouter>
-            );
-        };
+                {/* Simulate Arrival */}
+                <div className="px-4 pb-2 shrink-0">
+                    <Btn variant="secondary" onClick={() => nav('/complete')}>Simulate Arrival</Btn>
+                </div>
+            </main>
+        </div>
+    );
+};
 
-        const root = createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+/* ═══════════════════════════════════════════
+   SCREEN 7 — TRIP COMPLETION
+   ═══════════════════════════════════════════ */
+const CompletionPage = () => {
+    const nav = useNavigate();
+    const { riders } = useContext(TripContext);
+    const perPerson = (TRIP_COST / riders.length).toFixed(2);
+    return (
+        <div className="min-h-screen bg-uber-gray-50">
+            <TopBar title="Trip Completed"/>
+            <main className="pt-14 pb-24 px-4">
+                {/* Hero */}
+                <div className="text-center py-8">
+                    <div className="w-20 h-20 bg-uber-black rounded-full flex items-center justify-center mx-auto mb-4 anim-pop shadow-heavy">
+                        <Icon name="check_circle" size={40} fill className="text-white"/>
+                    </div>
+                    <h2 className="font-display font-bold text-2xl anim-slide">Everyone arrived together.</h2>
+                    <p className="text-sm text-uber-gray-500 mt-2 anim-slide max-w-xs mx-auto" style={{animationDelay:'.1s'}}>
+                        Your group of {riders.length} arrived at {DESTINATION.name} in 32 minutes.
+                    </p>
+                </div>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                    <StatCard icon="savings" label="Saved vs. individual" value="$23.00" sub={`vs. ${riders.length} separate rides`} accent className="col-span-2"/>
+                    <StatCard icon="group" label="Full crew accounted" value={`${riders.length} Riders`}/>
+                    <StatCard icon="directions_car" label="Coordinated fleet" value="2 Vehicles"/>
+                    <StatCard icon="schedule" label="Door to door" value="32 min" sub="Everyone together" className="col-span-2"/>
+                </div>
+
+                {/* Group Members */}
+                <Card className="p-4 mb-4">
+                    <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-3">Group Members</h3>
+                    <div className="flex flex-wrap gap-4 justify-center">
+                        {riders.slice(0,4).map((r, i) => (
+                            <div key={r.id} className="flex flex-col items-center gap-1 anim-pop" style={{animationDelay:`${i*.1}s`}}>
+                                <Avatar src={r.img} size={52}/>
+                                <span className="text-xs font-medium">{r.name}</span>
+                            </div>
+                        ))}
+                        {riders.length > 4 && (
+                            <div className="flex flex-col items-center gap-1 anim-pop" style={{animationDelay:'.4s'}}>
+                                <div className="w-[52px] h-[52px] rounded-full bg-uber-gray-100 flex items-center justify-center font-display font-bold text-lg">+{riders.length-4}</div>
+                                <span className="text-xs text-uber-gray-400">more</span>
+                            </div>
+                        )}
+                    </div>
+                </Card>
+
+                {/* Split Fare Summary */}
+                <Card className="p-4 mb-4">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="text-xs text-uber-gray-400">Your share</p>
+                            <p className="font-display font-bold text-xl">${perPerson}</p>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-xs text-uber-gray-400">Total trip</p>
+                            <p className="font-display font-bold text-xl">${TRIP_COST}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-3 p-2 bg-uber-gray-50 rounded-lg">
+                        <Icon name="receipt" size={16} className="text-uber-gray-400"/>
+                        <span className="text-xs text-uber-gray-500">Receipt sent to all riders</span>
+                    </div>
+                </Card>
+
+                {/* Archive Note */}
+                <Card className="p-4 flex gap-3 mb-4">
+                    <Icon name="archive" size={18} className="text-uber-gray-400 mt-0.5 shrink-0"/>
+                    <p className="text-xs text-uber-gray-500">This trip has been saved to your Trip History. All receipts and ride details are available in the Activity tab.</p>
+                </Card>
+
+                {/* Rating Prompt */}
+                <Card className="p-4 mb-4 text-center">
+                    <p className="text-sm font-semibold mb-2">How was your Group Trip?</p>
+                    <div className="flex justify-center gap-1">
+                        {[1,2,3,4,5].map(s => <button key={s} className="p-1 hover:scale-110 transition-transform"><Icon name="star" size={28} fill={s<=4} className={s<=4?'text-uber-black':'text-uber-gray-200'}/></button>)}
+                    </div>
+                </Card>
+
+                <Btn onClick={() => nav('/')}>Done</Btn>
+            </main>
+        </div>
+    );
+};
+
+/* ═══════════════════════════════════════════
+   APP
+   ═══════════════════════════════════════════ */
+const App = () => (
+    <MemoryRouter>
+        <TripProvider>
+            <Toast/>
+            <Modal/>
+            <Routes>
+                <Route path="/" element={<HomePage/>}/>
+                <Route path="/formation" element={<FormationPage/>}/>
+                <Route path="/plan" element={<PlanPage/>}/>
+                <Route path="/matching" element={<MatchingPage/>}/>
+                <Route path="/confirmed" element={<ConfirmedPage/>}/>
+                <Route path="/trip-room" element={<TripRoomPage/>}/>
+                <Route path="/complete" element={<CompletionPage/>}/>
+                <Route path="/activity" element={<ConfirmedPage/>}/>
+                <Route path="/account" element={<CompletionPage/>}/>
+                <Route path="/safety" element={<HomePage/>}/>
+            </Routes>
+        </TripProvider>
+    </MemoryRouter>
+);
+
+createRoot(document.getElementById('root')).render(<App/>);
+</script>
 </body>
 </html>
