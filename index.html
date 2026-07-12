@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>GroupTrip — Uber Coordinated Rides</title>
+    <title>GroupTrip  -  Uber Coordinated Rides</title>
     <!-- Kept local so this prototype also works when opened directly as a file. -->
     <script src="vendor/react.development.js"></script>
     <script src="vendor/react-dom.development.js"></script>
@@ -57,9 +57,9 @@ const { useState, useEffect, useRef, useCallback, createContext, useContext } = 
 const { createRoot } = ReactDOM;
 const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    GLOBAL STATE CONTEXT
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const TripContext = createContext();
 
 const RIDERS = [
@@ -94,7 +94,7 @@ const shareInvite = async (addToast) => {
     const shareData = { title:'Join my Uber Group Trip', text:`Join Alex's ride to ${DESTINATION.name}`, url:INVITE_URL };
     try {
         if (navigator.share) await navigator.share(shareData);
-        else if (navigator.clipboard) { await navigator.clipboard.writeText(INVITE_URL); addToast('Invite link copied — it expires in 60 minutes.', 'success'); }
+        else if (navigator.clipboard) { await navigator.clipboard.writeText(INVITE_URL); addToast('Invite link copied  -  it expires in 60 minutes.', 'success'); }
         else addToast(`Invite link: ${INVITE_URL}`, 'info');
     } catch (error) {
         if (error.name !== 'AbortError') addToast('Invite link is ready to share.', 'success');
@@ -126,9 +126,9 @@ function TripProvider({ children }) {
     );
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SHARED COMPONENTS
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const Icon = ({ name, fill, size=24, className='' }) => (
     <span className={`material-symbols-outlined ${className}`} style={{ fontSize: size, fontVariationSettings: fill ? "'FILL' 1" : "'FILL' 0" }}>{name}</span>
 );
@@ -265,9 +265,9 @@ const TimelineItem = ({ avatar, name, address, time, status='upcoming', isLast=f
     </div>
 );
 
-/* ═══════════════════════════════════════════
-   SCREEN 1 — HOME
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SCREEN 1  -  HOME
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const HomePage = () => {
     const nav = useNavigate();
     const { setTripState, setRiders } = useContext(TripContext);
@@ -338,9 +338,9 @@ const HomePage = () => {
     );
 };
 
-/* ═══════════════════════════════════════════
-   SCREEN 2 — GROUP FORMATION
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SCREEN 2  -  GROUP FORMATION
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const FormationPage = () => {
     const nav = useNavigate();
     const { riders, setRiders, addToast, showModal, RIDERS_ALL } = useContext(TripContext);
@@ -365,7 +365,7 @@ const FormationPage = () => {
             } else {
                 clearInterval(interval);
                 setProgress(100);
-                setStatusLog(prev => [...prev, { text: 'Route optimized — ready to review', type: 'done' }]);
+                setStatusLog(prev => [...prev, { text: 'Route optimized  -  ready to review', type: 'done' }]);
             }
         }, 1200);
         return () => clearInterval(interval);
@@ -466,9 +466,9 @@ const FormationPage = () => {
     );
 };
 
-/* ═══════════════════════════════════════════
-   SCREEN 3 — RECOMMENDED PLAN
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SCREEN 3  -  RECOMMENDED PLAN
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const PlanPage = () => {
     const nav = useNavigate();
     const { riders, showModal } = useContext(TripContext);
@@ -481,7 +481,7 @@ const PlanPage = () => {
                 <div className="relative h-52 overflow-hidden">
                     <MapBg grayscale={false} opacity={80} className="relative"/>
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-card flex items-center gap-2">
-                        <Icon name="route" size={16}/><span className="text-xs font-bold">6.4 mi · ~32 min</span>
+                        <Icon name="route" size={16}/><span className="text-xs font-bold">6.4 mi Â· ~32 min</span>
                     </div>
                 </div>
 
@@ -549,7 +549,7 @@ const PlanPage = () => {
                     <div>
                         <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Other Options</h3>
                         <div className="space-y-2">
-                            {[{t:'2× UberX',d:'Two separate standard cars',p:'$48.20'},{t:'1× Uber Lux XL',d:'Single premium large vehicle',p:'$89.00'}].map((a,i) => (
+                            {[{t:'2Ã -  UberX',d:'Two separate standard cars',p:'$48.20'},{t:'1Ã -  Uber Lux XL',d:'Single premium large vehicle',p:'$89.00'}].map((a,i) => (
                                 <Card key={i} className="p-3 flex justify-between items-center opacity-70">
                                     <div><p className="text-sm font-semibold">{a.t}</p><p className="text-xs text-uber-gray-500">{a.d}</p></div>
                                     <span className="text-sm font-bold text-uber-gray-500">{a.p}</span>
@@ -560,7 +560,7 @@ const PlanPage = () => {
                 </div>
             </main>
             <div className="fixed bottom-0 left-0 w-full z-40 bg-gradient-to-t from-uber-gray-50 via-uber-gray-50 to-transparent pt-6 px-4 pb-4">
-                <Btn onClick={() => showModal({ icon:'credit_card', title:'Confirm Group Plan?', body:`You’ll be charged $${TRIP_COST.toFixed(2)} now. The estimated equal split is $${perPerson} for each confirmed rider after the trip.`, actions:[{label:'Confirm & Book', action:()=>nav('/matching')},{label:'Cancel',variant:'secondary'}] })}>Confirm Group Plan</Btn>
+                <Btn onClick={() => showModal({ icon:'credit_card', title:'Confirm Group Plan?', body:`Youâ€™ll be charged $${TRIP_COST.toFixed(2)} now. The estimated equal split is $${perPerson} for each confirmed rider after the trip.`, actions:[{label:'Confirm & Book', action:()=>nav('/matching')},{label:'Cancel',variant:'secondary'}] })}>Confirm Group Plan</Btn>
             </div>
         </div>
     );
@@ -576,18 +576,18 @@ const VehicleRecommendationPage = () => {
         <main className="pt-20 pb-28 px-4 space-y-4">
             <div><p className="text-xs uppercase tracking-widest font-bold text-uber-gray-400">Recommended for your party</p><h2 className="font-display font-bold text-2xl mt-1">{vehicles.map(v=>v.type).join(' + ')}</h2><p className="text-sm text-uber-gray-500 mt-1">Best balance of speed and cost for {riders.length} riders.</p></div>
             {assigned.map((vehicle, index) => <Card key={index} className="p-4">
-                <div className="flex gap-3"><div className="w-12 h-12 rounded-xl bg-uber-black text-white flex items-center justify-center"><Icon name={vehicle.icon} size={26}/></div><div className="flex-1"><p className="font-display font-bold">Vehicle {index+1} · {vehicle.type}</p><p className="text-xs text-uber-gray-500">{vehicle.why}</p></div><p className="font-bold">${vehicle.price.toFixed(2)}</p></div>
+                <div className="flex gap-3"><div className="w-12 h-12 rounded-xl bg-uber-black text-white flex items-center justify-center"><Icon name={vehicle.icon} size={26}/></div><div className="flex-1"><p className="font-display font-bold">Vehicle {index+1} Â· {vehicle.type}</p><p className="text-xs text-uber-gray-500">{vehicle.why}</p></div><p className="font-bold">${vehicle.price.toFixed(2)}</p></div>
                 <div className="mt-4 pt-3 border-t border-uber-gray-100"><p className="text-[10px] font-bold text-uber-gray-400 uppercase">Passenger assignment</p><div className="flex mt-2 -space-x-2">{vehicle.riders.map(r=><Avatar key={r.id} src={r.img} size={34} className="border-2 border-white"/>)}</div><p className="text-xs mt-2 text-uber-gray-600">{vehicle.riders.map(r=>r.name).join(', ') || 'Assignment updating'}</p></div>
             </Card>)}
-            <div><p className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Other options</p><Card className="p-3 opacity-70 flex justify-between"><span><b>2× UberX</b><br/><small>Two separate standard cars</small></span><b>$48.20</b></Card><Card className="p-3 opacity-70 flex justify-between mt-2"><span><b>1× Uber Lux XL</b><br/><small>Single premium large vehicle</small></span><b>$89.00</b></Card></div>
+            <div><p className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Other options</p><Card className="p-3 opacity-70 flex justify-between"><span><b>2Ã -  UberX</b><br/><small>Two separate standard cars</small></span><b>$48.20</b></Card><Card className="p-3 opacity-70 flex justify-between mt-2"><span><b>1Ã -  Uber Lux XL</b><br/><small>Single premium large vehicle</small></span><b>$89.00</b></Card></div>
         </main>
         <div className="fixed bottom-0 inset-x-0 p-4 bg-white border-t border-uber-gray-100"><Btn onClick={()=>nav('/plan')}>Use this recommendation</Btn></div>
     </div>;
 };
 
-/* ═══════════════════════════════════════════
-   SCREEN 4 — DRIVER MATCHING
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SCREEN 4  -  DRIVER MATCHING
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const MatchingPage = () => {
     const nav = useNavigate();
     const { v1Status, setV1Status, v2Status, setV2Status, addToast, showModal, riders } = useContext(TripContext);
@@ -595,8 +595,8 @@ const MatchingPage = () => {
 
     useEffect(() => {
         setV1Status('searching'); setV2Status('searching');
-        const t1 = setTimeout(() => { setV1Status('matched'); addToast('Vehicle 1 matched — Michael, Toyota Camry', 'success'); }, 2500);
-        const t2 = setTimeout(() => { setV2Status('matched'); addToast('Vehicle 2 matched — Sarah, Ford Explorer', 'success'); }, 5000);
+        const t1 = setTimeout(() => { setV1Status('matched'); addToast('Vehicle 1 matched  -  Michael, Toyota Camry', 'success'); }, 2500);
+        const t2 = setTimeout(() => { setV2Status('matched'); addToast('Vehicle 2 matched  -  Sarah, Ford Explorer', 'success'); }, 5000);
         const t3 = setTimeout(() => nav('/confirmed'), 7000);
         const tick = setInterval(() => setElapsed(e => e + 1), 1000);
         return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearInterval(tick); };
@@ -624,12 +624,12 @@ const MatchingPage = () => {
                 </div>
                 <div className="flex-1">
                     <div className="flex justify-between items-center">
-                        <span className="text-sm font-bold">Vehicle {num} · {type}</span>
+                        <span className="text-sm font-bold">Vehicle {num} Â· {type}</span>
                         <span className={`text-[11px] font-bold uppercase ${status==='matched'?'text-uber-success':'text-uber-gray-400'}`}>
-                            {status==='matched' ? 'Matched' : <span className="dot-pulse"><span>·</span><span>·</span><span>·</span></span>}
+                            {status==='matched' ? 'Matched' : <span className="dot-pulse"><span>Â·</span><span>Â·</span><span>Â·</span></span>}
                         </span>
                     </div>
-                    <p className="text-xs text-uber-gray-500 mt-0.5">{status==='matched' ? `${driver} · ${car}` : 'Finding nearby drivers...'}</p>
+                    <p className="text-xs text-uber-gray-500 mt-0.5">{status==='matched' ? `${driver} Â· ${car}` : 'Finding nearby drivers...'}</p>
                 </div>
             </div>
         </div>
@@ -663,78 +663,66 @@ const MatchingPage = () => {
     );
 };
 
-/* ═══════════════════════════════════════════
-   SCREEN 5 — TRIP CONFIRMED
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SCREEN 5  -  TRIP CONFIRMED
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const ConfirmedPage = () => {
     const nav = useNavigate();
     const { riders, addToast } = useContext(TripContext);
     const perPerson = (TRIP_COST / riders.length).toFixed(2);
     return (
         <div className="min-h-screen bg-uber-gray-50">
-            <TopBar title="Trip Confirmed"/>
-            <main className="pt-14 pb-24">
-                {/* Success Header */}
-                <div className="bg-white px-4 py-6 text-center border-b border-uber-gray-100">
-                    <div className="w-14 h-14 bg-uber-success rounded-full flex items-center justify-center mx-auto mb-3 anim-pop"><Icon name="check" size={28} className="text-white"/></div>
-                    <h2 className="font-display font-bold text-xl anim-slide">Trip Confirmed</h2>
-                    <p className="text-sm text-uber-gray-500 mt-1 anim-slide" style={{animationDelay:'.1s'}}>Your group ride is scheduled and synced.</p>
+            <TopBar title="Group Trip"/>
+            <main className="pt-14 pb-32">
+                <section className="bg-white px-4 py-2.5 flex items-center justify-between border-b border-uber-gray-100 shadow-card relative z-10">
+                    <div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-uber-black text-white flex items-center justify-center anim-pop"><Icon name="check" size={17}/></div><div><h2 className="font-display font-bold text-sm">Trip Confirmed</h2><p className="text-[11px] text-uber-gray-500">Your group ride is scheduled</p></div></div>
+                    <span className="bg-uber-gray-100 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide text-uber-gray-600">Scheduled</span>
+                </section>
+
+                <div className="relative h-56 overflow-hidden">
+                    <MapBg grayscale={false} opacity={90}/>
+                    <div className="absolute inset-0 pointer-events-none">
+                        {riders.slice(0,3).map((r,i) => <div key={r.id} className="absolute w-7 h-7 rounded-full border-2 border-white shadow-heavy overflow-hidden" style={{top:`${22+i*18}%`,left:`${28+i*17}%`}}><Avatar src={r.img} size={24}/></div>)}
+                        <div className="absolute right-[24%] bottom-[20%] bg-uber-black text-white w-8 h-8 rounded-lg border-2 border-white shadow-heavy flex items-center justify-center"><Icon name="location_on" size={18} fill/></div>
+                    </div>
+                    <button onClick={() => nav('/trip-room')} className="absolute bottom-3 left-3 bg-white/95 rounded-lg shadow-card px-3 py-2 text-xs font-bold flex items-center gap-1.5"><Icon name="directions_car" size={16}/> Open Trip Room</button>
+                    <button aria-label="Center map" className="absolute top-3 right-3 bg-white w-9 h-9 rounded-lg shadow-card flex items-center justify-center"><Icon name="my_location" size={18}/></button>
                 </div>
 
-                {/* Map Preview */}
-                <div className="relative h-44 overflow-hidden"><MapBg grayscale={false} opacity={90}/></div>
-
-                <div className="px-4 mt-4 space-y-4">
-                    {/* Timeline */}
+                <div className="px-4 mt-4 space-y-3">
                     <Card className="p-4">
                         <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-3">Timeline & Pickup</h3>
-                        {riders.map((r, i, arr) => (
-                            <TimelineItem key={r.id} avatar={r.img} name={`${r.name}${r.me?' (You)':''}`} address={`Pickup: ${r.pickup}`} time={`8:${10+i*6} PM`} status="upcoming"/>
-                        ))}
-                        <TimelineItem name={DESTINATION.name} address={`Arrival: ${DESTINATION.address}`} time={DESTINATION.eta} status="upcoming" isLast/>
+                        {riders.map((r, i) => <TimelineItem key={r.id} avatar={r.img} name={`${r.name}${r.me?' (You)':''}`} address={`Pickup: ${r.pickup}`} time={`8:${10+i*6} PM`} status="upcoming" isLast={false}/>)}
+                        <TimelineItem name={DESTINATION.name} address="Arrival at destination" time={DESTINATION.eta} status="upcoming" isLast/>
                     </Card>
 
-                    {/* Reassurance */}
-                    <Card className="p-4 flex gap-3">
-                        <div className="w-10 h-10 bg-uber-gray-50 rounded-full flex items-center justify-center shrink-0"><Icon name="notifications_active" size={20} fill/></div>
-                        <div>
-                            <p className="text-sm font-bold">Stay Informed</p>
-                            <p className="text-xs text-uber-gray-500 mt-1">You'll receive pickup reminders and live updates. Track every rider's progress in the Trip Room.</p>
-                        </div>
-                    </Card>
-
-                    {/* Split Fare + Safety */}
                     <div className="grid grid-cols-2 gap-3">
-                        <Card className="p-4">
-                            <p className="text-[11px] text-uber-gray-400 uppercase font-bold">Split Fare</p>
-                            <p className="font-display font-bold text-lg mt-1">${perPerson}</p>
-                            <p className="text-[11px] text-uber-gray-400">each</p>
-                        </Card>
-                        <Card className="p-4">
-                            <p className="text-[11px] text-uber-gray-400 uppercase font-bold">Safety PIN</p>
-                            <p className="font-display font-bold text-lg mt-1 tracking-[.2em]">{SAFETY_PIN}</p>
-                            <p className="text-[11px] text-uber-gray-400">confirm to driver</p>
-                        </Card>
+                        <Card className="p-4"><Icon name="account_balance_wallet" size={19} className="text-uber-gray-500"/><p className="text-[11px] text-uber-gray-400 font-bold mt-3">Split Fare</p><p className="font-display font-bold text-lg mt-0.5">${perPerson} <span className="text-[11px] font-normal text-uber-gray-400">each</span></p></Card>
+                        <Card className="p-4"><Icon name="shield" size={19} className="text-uber-gray-500"/><p className="text-[11px] text-uber-gray-400 font-bold mt-3">Trip Safety</p><p className="font-display font-bold text-lg mt-0.5">PIN: {SAFETY_PIN}</p></Card>
                     </div>
+
+                    <Card className="p-4 flex gap-3 bg-uber-gray-50">
+                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shrink-0"><Icon name="notifications_active" size={20}/></div>
+                        <div><p className="text-sm font-bold">Stay Informed</p><p className="text-xs text-uber-gray-500 mt-1">Everyone will receive pickup reminders and live updates. Track the vehicle in real time.</p></div>
+                    </Card>
                 </div>
             </main>
-            <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-uber-gray-100 p-4 space-y-2">
-                <Btn onClick={() => nav('/trip-room')}>Open Trip Room</Btn>
-                <Btn variant="ghost" onClick={() => { addToast('Your trip will continue in the background.', 'success'); nav('/'); }}>Done</Btn>
+            <div className="fixed bottom-0 left-0 w-full z-40 bg-white/95 backdrop-blur border-t border-uber-gray-100 p-4 space-y-2">
+                <Btn onClick={() => { addToast('Your trip will continue in the background.', 'success'); nav('/'); }}>Done</Btn>
                 <Btn variant="secondary" icon="share" onClick={() => addToast('Live status link copied!', 'success')}>Share Live Status</Btn>
             </div>
         </div>
     );
 };
 
-/* ═══════════════════════════════════════════
-   SCREEN 6 — TRIP ROOM
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SCREEN 6  -  TRIP ROOM
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const TripRoomPage = () => {
     const nav = useNavigate();
     const { riders, pickupIndex, setPickupIndex, addToast, showModal } = useContext(TripContext);
     const [messages, setMessages] = useState([
-        { type:'system', text:'Trip started — Driver Michael is en route', icon:'directions_car', time:'8:05 PM' },
+        { type:'system', text:'Trip started  -  Driver Michael is en route', icon:'directions_car', time:'8:05 PM' },
     ]);
     const [inputVal, setInputVal] = useState('');
     const chatRef = useRef(null);
@@ -791,7 +779,7 @@ const TripRoomPage = () => {
                             </div>
                             <div>
                                 <p className="text-sm font-bold">Michael T.</p>
-                                <p className="text-[11px] text-uber-gray-500">Toyota Camry · KLU 992</p>
+                                <p className="text-[11px] text-uber-gray-500">Toyota Camry Â· KLU 992</p>
                             </div>
                         </div>
                         <div className="text-right">
@@ -840,7 +828,7 @@ const TripRoomPage = () => {
                             return (
                                 <div key={i} className={`flex flex-col gap-0.5 max-w-[80%] anim-slide ${isMe||isDriver?'self-end items-end':'self-start items-start'}`}>
                                     <div className={`px-3 py-2 rounded-2xl text-sm ${isDriver?'bg-uber-black text-white rounded-br-sm':isMe?'bg-uber-gray-100 rounded-br-sm':'bg-uber-gray-100 rounded-bl-sm'}`}>{msg.text}</div>
-                                    <span className="text-[10px] text-uber-gray-400">{msg.name}{isDriver?' (Driver)':''} · {msg.time}</span>
+                                    <span className="text-[10px] text-uber-gray-400">{msg.name}{isDriver?' (Driver)':''} Â· {msg.time}</span>
                                 </div>
                             );
                         })}
@@ -866,9 +854,9 @@ const TripRoomPage = () => {
     );
 };
 
-/* ═══════════════════════════════════════════
-   SCREEN 7 — TRIP COMPLETION
-   ═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SCREEN 7  -  TRIP COMPLETION
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const CompletionPage = () => {
     const nav = useNavigate();
     const { riders } = useContext(TripContext);
@@ -953,9 +941,9 @@ const CompletionPage = () => {
     );
 };
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    APP
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const App = () => (
     <MemoryRouter>
         <TripProvider>
