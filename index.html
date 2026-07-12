@@ -481,7 +481,7 @@ const PlanPage = () => {
                 <div className="relative h-52 overflow-hidden">
                     <MapBg grayscale={false} opacity={80} className="relative"/>
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-card flex items-center gap-2">
-                        <Icon name="route" size={16}/><span className="text-xs font-bold">6.4 mi Â· ~32 min</span>
+                        <Icon name="route" size={16}/><span className="text-xs font-bold">6.4 mi - ~32 min</span>
                     </div>
                 </div>
 
@@ -549,7 +549,7 @@ const PlanPage = () => {
                     <div>
                         <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Other Options</h3>
                         <div className="space-y-2">
-                            {[{t:'2Ã -  UberX',d:'Two separate standard cars',p:'$48.20'},{t:'1Ã -  Uber Lux XL',d:'Single premium large vehicle',p:'$89.00'}].map((a,i) => (
+                            {[{t:'2x UberX',d:'Two separate standard cars',p:'$48.20'},{t:'1x Uber Lux XL',d:'Single premium large vehicle',p:'$89.00'}].map((a,i) => (
                                 <Card key={i} className="p-3 flex justify-between items-center opacity-70">
                                     <div><p className="text-sm font-semibold">{a.t}</p><p className="text-xs text-uber-gray-500">{a.d}</p></div>
                                     <span className="text-sm font-bold text-uber-gray-500">{a.p}</span>
@@ -560,7 +560,7 @@ const PlanPage = () => {
                 </div>
             </main>
             <div className="fixed bottom-0 left-0 w-full z-40 bg-gradient-to-t from-uber-gray-50 via-uber-gray-50 to-transparent pt-6 px-4 pb-4">
-                <Btn onClick={() => showModal({ icon:'credit_card', title:'Confirm Group Plan?', body:`Youâ€™ll be charged $${TRIP_COST.toFixed(2)} now. The estimated equal split is $${perPerson} for each confirmed rider after the trip.`, actions:[{label:'Confirm & Book', action:()=>nav('/matching')},{label:'Cancel',variant:'secondary'}] })}>Confirm Group Plan</Btn>
+                <Btn onClick={() => showModal({ icon:'credit_card', title:'Confirm Group Plan?', body:`You'll be charged $${TRIP_COST.toFixed(2)} now. The estimated equal split is $${perPerson} for each confirmed rider after the trip.`, actions:[{label:'Confirm & Book', action:()=>nav('/matching')},{label:'Cancel',variant:'secondary'}] })}>Confirm Group Plan</Btn>
             </div>
         </div>
     );
@@ -576,10 +576,10 @@ const VehicleRecommendationPage = () => {
         <main className="pt-20 pb-28 px-4 space-y-4">
             <div><p className="text-xs uppercase tracking-widest font-bold text-uber-gray-400">Recommended for your party</p><h2 className="font-display font-bold text-2xl mt-1">{vehicles.map(v=>v.type).join(' + ')}</h2><p className="text-sm text-uber-gray-500 mt-1">Best balance of speed and cost for {riders.length} riders.</p></div>
             {assigned.map((vehicle, index) => <Card key={index} className="p-4">
-                <div className="flex gap-3"><div className="w-12 h-12 rounded-xl bg-uber-black text-white flex items-center justify-center"><Icon name={vehicle.icon} size={26}/></div><div className="flex-1"><p className="font-display font-bold">Vehicle {index+1} Â· {vehicle.type}</p><p className="text-xs text-uber-gray-500">{vehicle.why}</p></div><p className="font-bold">${vehicle.price.toFixed(2)}</p></div>
+                <div className="flex gap-3"><div className="w-12 h-12 rounded-xl bg-uber-black text-white flex items-center justify-center"><Icon name={vehicle.icon} size={26}/></div><div className="flex-1"><p className="font-display font-bold">Vehicle {index+1} - {vehicle.type}</p><p className="text-xs text-uber-gray-500">{vehicle.why}</p></div><p className="font-bold">${vehicle.price.toFixed(2)}</p></div>
                 <div className="mt-4 pt-3 border-t border-uber-gray-100"><p className="text-[10px] font-bold text-uber-gray-400 uppercase">Passenger assignment</p><div className="flex mt-2 -space-x-2">{vehicle.riders.map(r=><Avatar key={r.id} src={r.img} size={34} className="border-2 border-white"/>)}</div><p className="text-xs mt-2 text-uber-gray-600">{vehicle.riders.map(r=>r.name).join(', ') || 'Assignment updating'}</p></div>
             </Card>)}
-            <div><p className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Other options</p><Card className="p-3 opacity-70 flex justify-between"><span><b>2Ã -  UberX</b><br/><small>Two separate standard cars</small></span><b>$48.20</b></Card><Card className="p-3 opacity-70 flex justify-between mt-2"><span><b>1Ã -  Uber Lux XL</b><br/><small>Single premium large vehicle</small></span><b>$89.00</b></Card></div>
+            <div><p className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest mb-2">Other options</p><Card className="p-3 opacity-70 flex justify-between"><span><b>2x UberX</b><br/><small>Two separate standard cars</small></span><b>$48.20</b></Card><Card className="p-3 opacity-70 flex justify-between mt-2"><span><b>1x Uber Lux XL</b><br/><small>Single premium large vehicle</small></span><b>$89.00</b></Card></div>
         </main>
         <div className="fixed bottom-0 inset-x-0 p-4 bg-white border-t border-uber-gray-100"><Btn onClick={()=>nav('/plan')}>Use this recommendation</Btn></div>
     </div>;
@@ -624,12 +624,12 @@ const MatchingPage = () => {
                 </div>
                 <div className="flex-1">
                     <div className="flex justify-between items-center">
-                        <span className="text-sm font-bold">Vehicle {num} Â· {type}</span>
+                        <span className="text-sm font-bold">Vehicle {num} - {type}</span>
                         <span className={`text-[11px] font-bold uppercase ${status==='matched'?'text-uber-success':'text-uber-gray-400'}`}>
-                            {status==='matched' ? 'Matched' : <span className="dot-pulse"><span>Â·</span><span>Â·</span><span>Â·</span></span>}
+                            {status==='matched' ? 'Matched' : <span className="dot-pulse"><span>.</span><span>.</span><span>.</span></span>}
                         </span>
                     </div>
-                    <p className="text-xs text-uber-gray-500 mt-0.5">{status==='matched' ? `${driver} Â· ${car}` : 'Finding nearby drivers...'}</p>
+                    <p className="text-xs text-uber-gray-500 mt-0.5">{status==='matched' ? `${driver} - ${car}` : 'Finding nearby drivers...'}</p>
                 </div>
             </div>
         </div>
@@ -779,7 +779,7 @@ const TripRoomPage = () => {
                             </div>
                             <div>
                                 <p className="text-sm font-bold">Michael T.</p>
-                                <p className="text-[11px] text-uber-gray-500">Toyota Camry Â· KLU 992</p>
+                                <p className="text-[11px] text-uber-gray-500">Toyota Camry - KLU 992</p>
                             </div>
                         </div>
                         <div className="text-right">
@@ -828,7 +828,7 @@ const TripRoomPage = () => {
                             return (
                                 <div key={i} className={`flex flex-col gap-0.5 max-w-[80%] anim-slide ${isMe||isDriver?'self-end items-end':'self-start items-start'}`}>
                                     <div className={`px-3 py-2 rounded-2xl text-sm ${isDriver?'bg-uber-black text-white rounded-br-sm':isMe?'bg-uber-gray-100 rounded-br-sm':'bg-uber-gray-100 rounded-bl-sm'}`}>{msg.text}</div>
-                                    <span className="text-[10px] text-uber-gray-400">{msg.name}{isDriver?' (Driver)':''} Â· {msg.time}</span>
+                                    <span className="text-[10px] text-uber-gray-400">{msg.name}{isDriver?' (Driver)':''} - {msg.time}</span>
                                 </div>
                             );
                         })}
