@@ -591,6 +591,23 @@ const HomePage = () => {
                             ))}
                         </Card>
                     </div>
+
+                    <div className="mt-1">
+                        <h3 className="text-[11px] font-bold text-uber-gray-400 uppercase tracking-widest px-1 mb-2">Your Groups</h3>
+                        <Card className="p-4">
+                            <button onClick={startTrip} className="w-full flex items-center gap-3 text-left btn-press">
+                                <div className="w-10 h-10 rounded-full bg-uber-gray-50 flex items-center justify-center"><Icon name="groups" size={20} fill className="text-uber-gray-600"/></div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-semibold">Weekend Trip</p>
+                                    <p className="text-xs text-uber-gray-500">4 active members &bull; Planning to Chase Center</p>
+                                </div>
+                                <div className="flex -space-x-1.5 shrink-0">
+                                    {RIDERS_ALL.slice(0,2).map(r => <Avatar key={r.id} src={r.img} size={22} className="border-2 border-white rounded-full"/>)}
+                                    <div className="w-[22px] h-[22px] rounded-full bg-uber-gray-200 border-2 border-white flex items-center justify-center text-[8px] font-bold text-uber-gray-500">+2</div>
+                                </div>
+                            </button>
+                        </Card>
+                    </div>
                 </div>
             </main>
             <BottomNav active="home"/>
