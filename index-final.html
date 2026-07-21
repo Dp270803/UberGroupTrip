@@ -56,10 +56,10 @@
             #root { display: flex; justify-content: center; align-items: flex-start; gap: 48px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
             .desktop-sidebar { display: flex; flex-direction: column; justify-content: center; padding-top: 80px; max-width: 360px; position: sticky; top: 32px; }
             .phone-frame { width: 390px; min-width: 390px; height: 844px; border-radius: 40px; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08); position: relative; background: #F6F6F6; }
-            .phone-frame > div { height: 100%; overflow-y: auto; overflow-x: hidden; }
+            .phone-frame > div:last-child { height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none; }
+            .phone-frame > div:last-child::-webkit-scrollbar { display: none; }
             .phone-frame .fixed { position: absolute; }
-            .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 28px; background: #000; border-radius: 0 0 20px 20px; z-index: 200; }
-            .phone-notch::after { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 60px; height: 6px; background: #1a1a1a; border-radius: 3px; }
+            .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 126px; height: 6px; background: #000; border-radius: 0 0 14px 14px; z-index: 200; }
         }
         @media (max-width: 599px) {
             .desktop-sidebar { display: none !important; }
