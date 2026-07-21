@@ -52,14 +52,14 @@
 
         /* Desktop: phone frame centered with sidebar */
         @media (min-width: 600px) {
-            body { background: #1a1a1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
-            #root { display: flex; justify-content: center; align-items: flex-start; gap: 48px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
-            .desktop-sidebar { display: flex; flex-direction: column; justify-content: center; padding-top: 80px; max-width: 360px; position: sticky; top: 32px; }
-            .phone-frame { width: 390px; min-width: 390px; height: calc(100vh - 64px); max-height: 900px; border-radius: 40px; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08); position: relative; background: #F6F6F6; }
+            body { background: #1a1a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+            #root { display: flex; justify-content: center; align-items: center; gap: 48px; width: 100%; max-width: 960px; margin: 0 auto; padding: 24px; }
+            .desktop-sidebar { display: flex; flex-direction: column; justify-content: center; max-width: 300px; }
+            .phone-frame { width: 320px; min-width: 320px; height: calc(100vh - 48px); max-height: 680px; border-radius: 36px; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08); position: relative; background: #F6F6F6; }
             .phone-frame > div:last-child { height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none; }
             .phone-frame > div:last-child::-webkit-scrollbar { display: none; }
             .phone-frame .fixed { position: absolute; }
-            .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 126px; height: 6px; background: #000; border-radius: 0 0 14px 14px; z-index: 200; }
+            .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100px; height: 5px; background: #000; border-radius: 0 0 12px 12px; z-index: 200; }
         }
         @media (max-width: 599px) {
             .desktop-sidebar { display: none !important; }
