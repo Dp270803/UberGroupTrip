@@ -29,7 +29,7 @@
     </script>
     <style>
         * { -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: #F6F6F6; overscroll-behavior: none; }
+        body { font-family: 'Inter', sans-serif; background: #F6F6F6; overscroll-behavior: none; margin: 0; }
         @keyframes pop { 0%{transform:scale(.7);opacity:0} 100%{transform:scale(1);opacity:1} }
         @keyframes slideUp { 0%{transform:translateY(20px);opacity:0} 100%{transform:translateY(0);opacity:1} }
         @keyframes fadeIn { 0%{opacity:0} 100%{opacity:1} }
@@ -49,6 +49,22 @@
         .shadow-heavy { box-shadow: 0 8px 30px rgba(0,0,0,.12); }
         .btn-press:active { transform: scale(.97); }
         input:focus { outline: none; }
+
+        /* Desktop: phone frame centered with sidebar */
+        @media (min-width: 600px) {
+            body { background: #1a1a1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+            #root { display: flex; justify-content: center; align-items: flex-start; gap: 48px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+            .desktop-sidebar { display: flex; flex-direction: column; justify-content: center; padding-top: 80px; max-width: 360px; position: sticky; top: 32px; }
+            .phone-frame { width: 390px; min-width: 390px; height: 844px; border-radius: 40px; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08); position: relative; background: #F6F6F6; }
+            .phone-frame > div { height: 100%; overflow-y: auto; overflow-x: hidden; }
+            .phone-frame .fixed { position: absolute; }
+            .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 28px; background: #000; border-radius: 0 0 20px 20px; z-index: 200; }
+            .phone-notch::after { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 60px; height: 6px; background: #1a1a1a; border-radius: 3px; }
+        }
+        @media (max-width: 599px) {
+            .desktop-sidebar { display: none !important; }
+            .phone-notch { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -1522,24 +1538,60 @@ const CompletionPage = () => {
 /* ═══════════════════════════════════════════
    APP
    ═══════════════════════════════════════════ */
+const DesktopSidebar = () => (
+    <div className="desktop-sidebar">
+        <div style={{color:'#fff'}}>
+            <h1 style={{fontFamily:'Plus Jakarta Sans, sans-serif', fontSize:'36px', fontWeight:800, lineHeight:1.1, marginBottom:'16px'}}>
+                Uber<br/>Group Trip
+            </h1>
+            <p style={{fontSize:'16px', color:'rgba(255,255,255,0.6)', lineHeight:1.6, marginBottom:'32px', maxWidth:'320px'}}>
+                Coordinate pickups for your entire group in one booking. Split fares fairly with segment-based pricing.
+            </p>
+            <div style={{display:'flex', flexDirection:'column', gap:'16px', marginBottom:'40px'}}>
+                {[
+                    {icon:'groups', text:'Up to 12 riders per trip'},
+                    {icon:'route', text:'Optimized pickup sequence'},
+                    {icon:'savings', text:'Save up to 72% vs solo rides'},
+                    {icon:'shield', text:'Shared safety PIN for all vehicles'},
+                ].map((item, i) => (
+                    <div key={i} style={{display:'flex', alignItems:'center', gap:'12px'}}>
+                        <span className="material-symbols-outlined" style={{fontSize:'20px', color:'rgba(255,255,255,0.4)'}}>{item.icon}</span>
+                        <span style={{fontSize:'14px', color:'rgba(255,255,255,0.5)'}}>{item.text}</span>
+                    </div>
+                ))}
+            </div>
+            <div style={{padding:'16px', background:'rgba(255,255,255,0.05)', borderRadius:'12px', border:'1px solid rgba(255,255,255,0.08)'}}>
+                <p style={{fontSize:'11px', color:'rgba(255,255,255,0.3)', textTransform:'uppercase', letterSpacing:'1.5px', fontWeight:700, marginBottom:'8px'}}>Interactive Prototype</p>
+                <p style={{fontSize:'13px', color:'rgba(255,255,255,0.45)', lineHeight:1.5}}>Tap through the app to experience the full Group Trip flow — from formation to trip completion.</p>
+            </div>
+        </div>
+    </div>
+);
+
 const App = () => (
     <MemoryRouter>
         <TripProvider>
-            <Toast/>
-            <Modal/>
-            <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/formation" element={<FormationPage/>}/>
-                <Route path="/plan" element={<PlanPage/>}/>
-                <Route path="/vehicles" element={<VehicleRecommendationPage/>}/>
-                <Route path="/matching" element={<MatchingPage/>}/>
-                <Route path="/confirmed" element={<ConfirmedPage/>}/>
-                <Route path="/trip-room" element={<TripRoomPage/>}/>
-                <Route path="/complete" element={<CompletionPage/>}/>
-                <Route path="/activity" element={<ConfirmedPage/>}/>
-                <Route path="/account" element={<CompletionPage/>}/>
-                <Route path="/safety" element={<HomePage/>}/>
-            </Routes>
+            <DesktopSidebar/>
+            <div className="phone-frame">
+                <div className="phone-notch"/>
+                <div>
+                    <Toast/>
+                    <Modal/>
+                    <Routes>
+                        <Route path="/" element={<HomePage/>}/>
+                        <Route path="/formation" element={<FormationPage/>}/>
+                        <Route path="/plan" element={<PlanPage/>}/>
+                        <Route path="/vehicles" element={<VehicleRecommendationPage/>}/>
+                        <Route path="/matching" element={<MatchingPage/>}/>
+                        <Route path="/confirmed" element={<ConfirmedPage/>}/>
+                        <Route path="/trip-room" element={<TripRoomPage/>}/>
+                        <Route path="/complete" element={<CompletionPage/>}/>
+                        <Route path="/activity" element={<ConfirmedPage/>}/>
+                        <Route path="/account" element={<CompletionPage/>}/>
+                        <Route path="/safety" element={<HomePage/>}/>
+                    </Routes>
+                </div>
+            </div>
         </TripProvider>
     </MemoryRouter>
 );
